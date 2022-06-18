@@ -23,7 +23,8 @@ esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_in
     return gpio_config(&pinConf);
 }
 
-sdmmc_card_t* cleytin_get_sdcard() {
+sdmmc_card_t* cleytin_mount_fs() {
+    cleytin_set_gpio_pin(2, CLEYTIN_GPIO_MODE_INPUT_PULLUP, GPIO_INTR_DISABLE);
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = false,
         .max_files = 5,

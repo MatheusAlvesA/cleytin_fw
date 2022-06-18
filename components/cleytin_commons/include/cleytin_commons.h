@@ -1,10 +1,8 @@
-#include <stdio.h>
 #include "driver/gpio.h"
 #include "sdmmc_cmd.h"
 #include "driver/sdmmc_host.h"
 #include "esp_spi_flash.h"
 #include "esp_partition.h"
-#include "esp_system.h"
 #include "esp_vfs_fat.h"
 
 #define CLEYTIN_GAME_ROM_ADDR 0x10000
@@ -36,8 +34,8 @@ void cleytin_reboot_and_load_game_rom(void);
 esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_int_type_t intr);
 
 /**
- * @brief Retorna o sdcard padrão do Cleytin
+ * @brief Monta o sistema de arquivos em /sdcard e retorna o sd card padrão do Cleytin ou null em caso de falha
  * 
  * @return sdmmc_card_t* 
  */
-sdmmc_card_t* cleytin_get_sdcard();
+sdmmc_card_t* cleytin_mount_fs();
