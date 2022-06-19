@@ -71,10 +71,15 @@ cleytin_load_rom_result_t cleytin_load_game_rom(const char *path) {
     const esp_partition_t* espPart = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_ANY, "game_rom");
     unsigned char *buffer = (unsigned char *) malloc(CLEYTIN_BUFFER_SIZE);
     uint32_t i = 0;
+    cleytin_game_rom_load_progress = 0;
+    fseek(f, 0L, SEEK_END);
+    float steps = ftell(f) / CLEYTIN_BUFFER_SIZE;
+    rewind(f);
     while(i * CLEYTIN_BUFFER_SIZE < CLEYTIN_GAME_ROM_SIZE) {
         if(feof(f)) {
             break;
         }
+        cleytin_game_rom_load_progress = (uint8_t)((i / steps) * 100);
         size_t readedSize = fread(buffer, 1, CLEYTIN_BUFFER_SIZE, f);
         esp_partition_erase_range(espPart, i * CLEYTIN_BUFFER_SIZE, CLEYTIN_BUFFER_SIZE);
         esp_partition_write(espPart, i * CLEYTIN_BUFFER_SIZE, buffer, readedSize);
@@ -82,5 +87,6 @@ cleytin_load_rom_result_t cleytin_load_game_rom(const char *path) {
     }
     free(buffer);
     fclose(f);
+    cleytin_game_rom_load_progress = 100;
     return CLEYTIN_LOAD_ROM_RESULT_OK;
 }

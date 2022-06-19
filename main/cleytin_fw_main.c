@@ -2,7 +2,10 @@
 #include <dirent.h> 
 #include <sys/types.h>
 #include <unistd.h>
+#include <esp_ipc.h>
 #include "cleytin_commons.h"
+
+volatile uint8_t cleytin_game_rom_load_progress = 100;
 
 int is_regular_file(const char *path)
 {
@@ -47,6 +50,16 @@ char *extract_game_rom_file_name(char *name) {
     return res;
 }
 
+void load_game_rom(void *path) {
+    cleytin_load_rom_result_t res = cleytin_load_game_rom((char *)path);
+    if(res != CLEYTIN_LOAD_ROM_RESULT_OK) {
+        printf("Falha ao carregar (%d)\n", res);
+        vTaskDelete(NULL);
+    }
+    printf("Rom carregada!\n");
+    vTaskDelete(NULL);
+}
+
 void app_main(void)
 {
     sdmmc_card_t *card = cleytin_mount_fs();
@@ -55,6 +68,7 @@ void app_main(void)
         return;
     }
 
+    TaskHandle_t xHandle = NULL;
     DIR *d;
     struct dirent *entry;
     d = opendir("/sdcard");
@@ -62,13 +76,13 @@ void app_main(void)
         char *romName = extract_game_rom_file_name(entry->d_name);
         if(romName != NULL) {
             printf("%s\nCarregando rom...\n", romName);
-            cleytin_load_rom_result_t res = cleytin_load_game_rom(entry->d_name);
             free(romName);
-            if(res != CLEYTIN_LOAD_ROM_RESULT_OK) {
-                printf("Falha ao carregar (%d)\n", res);
-                return;
+            xTaskCreate(load_game_rom, "LOAD", 10*1024, entry->d_name, 1, xHandle);
+            vTaskDelay(100 / portTICK_PERIOD_MS);
+            while(cleytin_game_rom_load_progress < 100) {
+                printf("Progresso: %d%%\n", cleytin_game_rom_load_progress);
+                vTaskDelay(100 / portTICK_PERIOD_MS);
             }
-            printf("Rom carregada iniciando game...\n");
             cleytin_reboot_and_load_game_rom();
         }
     }

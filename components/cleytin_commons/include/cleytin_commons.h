@@ -26,6 +26,7 @@ typedef enum {
     CLEYTIN_LOAD_ROM_RESULT_INVALID_FILE = 2,
 } cleytin_load_rom_result_t;
 
+extern volatile uint8_t cleytin_game_rom_load_progress;
 
 /**
  * @brief Reinicia o microcontrolador e marca a flag de game rom.
