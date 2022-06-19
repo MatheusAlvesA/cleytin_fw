@@ -1,4 +1,3 @@
-#include <string.h>
 #include <sys/stat.h>
 #include <dirent.h> 
 #include <sys/types.h>
@@ -59,14 +58,20 @@ void app_main(void)
     DIR *d;
     struct dirent *entry;
     d = opendir("/sdcard");
-    if (d) {
-        while ((entry = readdir(d)) != NULL) {
-            char *romName = extract_game_rom_file_name(entry->d_name);
-            if(romName != NULL) {
-                printf("%s\n", romName);
-                free(romName);
+    while ((entry = readdir(d)) != NULL) {
+        char *romName = extract_game_rom_file_name(entry->d_name);
+        if(romName != NULL) {
+            printf("%s\nCarregando rom...\n", romName);
+            cleytin_load_rom_result_t res = cleytin_load_game_rom(entry->d_name);
+            free(romName);
+            if(res != CLEYTIN_LOAD_ROM_RESULT_OK) {
+                printf("Falha ao carregar (%d)\n", res);
+                return;
             }
+            printf("Rom carregada iniciando game...\n");
+            cleytin_reboot_and_load_game_rom();
         }
-        closedir(d);
     }
+    closedir(d);
+    printf("Não foi encontrada nenhuma game rom!\n");
 }

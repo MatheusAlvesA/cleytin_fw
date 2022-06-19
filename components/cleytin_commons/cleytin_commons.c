@@ -24,13 +24,16 @@ esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_in
 }
 
 sdmmc_card_t* cleytin_mount_fs() {
+    static sdmmc_card_t *card = NULL;
+    if(card != NULL) {
+        return card;
+    }
     cleytin_set_gpio_pin(2, CLEYTIN_GPIO_MODE_INPUT_PULLUP, GPIO_INTR_DISABLE);
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = false,
         .max_files = 5,
         .allocation_unit_size = 16 * 1024
     };
-    sdmmc_card_t *card;
     ESP_LOGI(LOG_TAG, "Inicializando SD Card");
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
     sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
@@ -51,4 +54,33 @@ sdmmc_card_t* cleytin_mount_fs() {
     }
     ESP_LOGI(LOG_TAG, "Sistema de arquivos montado");
     return card;
+}
+
+cleytin_load_rom_result_t cleytin_load_game_rom(const char *path) {
+    if(cleytin_mount_fs() == NULL) {
+        return CLEYTIN_LOAD_ROM_RESULT_SDCARD_FAIL;
+    }
+
+    char fullPath[400] = "/sdcard/";
+    strcat(fullPath, path);
+    FILE *f = fopen(fullPath, "rb");
+    if(f == NULL) {
+        return CLEYTIN_LOAD_ROM_RESULT_INVALID_FILE;
+    }
+
+    const esp_partition_t* espPart = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_ANY, "game_rom");
+    unsigned char *buffer = (unsigned char *) malloc(CLEYTIN_BUFFER_SIZE);
+    uint32_t i = 0;
+    while(i * CLEYTIN_BUFFER_SIZE < CLEYTIN_GAME_ROM_SIZE) {
+        if(feof(f)) {
+            break;
+        }
+        size_t readedSize = fread(buffer, 1, CLEYTIN_BUFFER_SIZE, f);
+        esp_partition_erase_range(espPart, i * CLEYTIN_BUFFER_SIZE, CLEYTIN_BUFFER_SIZE);
+        esp_partition_write(espPart, i * CLEYTIN_BUFFER_SIZE, buffer, readedSize);
+        i++;
+    }
+    free(buffer);
+    fclose(f);
+    return CLEYTIN_LOAD_ROM_RESULT_OK;
 }
