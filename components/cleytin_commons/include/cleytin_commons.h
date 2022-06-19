@@ -1,3 +1,6 @@
+#ifndef CLEYTIN_COMMONS_H
+#define CLEYTIN_COMMONS_H
+
 #include <string.h>
 #include "driver/gpio.h"
 #include "sdmmc_cmd.h"
@@ -60,3 +63,5 @@ sdmmc_card_t* cleytin_mount_fs();
  * @return cleytin_load_rom_result_t 
  */
 cleytin_load_rom_result_t cleytin_load_game_rom(const char *path);
+
+#endif

@@ -1,5 +1,7 @@
 #include "cleytin_commons.h"
 
+volatile uint8_t cleytin_game_rom_load_progress = 100;
+
 static const char *LOG_TAG = "cleytin";
 
 void cleytin_reboot_and_load_game_rom(void)
