@@ -31,6 +31,8 @@ typedef enum {
 
 extern volatile uint8_t cleytin_game_rom_load_progress;
 
+extern "C" {
+
 /**
  * @brief Reinicia o microcontrolador e marca a flag de game rom.
  * Ao reiniciar o bootloader irá iniciar o jogo ao invés do firmware.
@@ -64,4 +66,12 @@ sdmmc_card_t* cleytin_mount_fs();
  */
 cleytin_load_rom_result_t cleytin_load_game_rom(const char *path);
 
+/**
+ * @brief Realiza um delay na execução
+ * 
+ * @param uint64_t O número de nanosegundos
+ */
+void cleytin_delay(const uint64_t ms);
+
+}
 #endif

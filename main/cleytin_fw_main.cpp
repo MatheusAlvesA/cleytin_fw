@@ -1,3 +1,5 @@
+#include "cleytin_engine.h"
+/*
 #include "cleytin_storage.h"
 
 #define MAX_ROM_LIST_SIZE 200
@@ -41,4 +43,10 @@ void app_main(void)
         cleytin_reboot_and_load_game_rom();
     }
     printf("Não foi encontrada nenhuma game rom!\n");
+}
+*/
+
+extern "C" void app_main(void)
+{
+    CleytinEngine engine;
 }

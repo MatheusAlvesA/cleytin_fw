@@ -60,7 +60,7 @@ char **list_valid_game_roms(size_t maxResults) {
         return NULL;
     }
 
-    char **result = malloc(sizeof(char*) * maxResults);
+    char **result = (char **)malloc(sizeof(char*) * maxResults);
 
     DIR *d;
     struct dirent *entry;

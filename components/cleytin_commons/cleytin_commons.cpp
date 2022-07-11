@@ -17,9 +17,9 @@ esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_in
     gpio_reset_pin(pin);
     gpio_config_t pinConf = {
         .pin_bit_mask = 1UL << pin,
-        .mode = (CLEYTIN_GPIO_MODE_INPUT || CLEYTIN_GPIO_MODE_INPUT_PULLUP || CLEYTIN_GPIO_MODE_INPUT_PULLDOWN) ? GPIO_MODE_INPUT : GPIO_MODE_OUTPUT,
-        .pull_up_en = (CLEYTIN_GPIO_MODE_INPUT_PULLUP || CLEYTIN_GPIO_MODE_OUTPUT_PULLUP) ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE,
-        .pull_down_en = (CLEYTIN_GPIO_MODE_INPUT_PULLDOWN || CLEYTIN_GPIO_MODE_OUTPUT_PULLDOWN) ? GPIO_PULLDOWN_ENABLE : GPIO_PULLDOWN_DISABLE,
+        .mode = (mode == CLEYTIN_GPIO_MODE_INPUT || mode == CLEYTIN_GPIO_MODE_INPUT_PULLUP || mode == CLEYTIN_GPIO_MODE_INPUT_PULLDOWN) ? GPIO_MODE_INPUT : GPIO_MODE_OUTPUT,
+        .pull_up_en = (mode == CLEYTIN_GPIO_MODE_INPUT_PULLUP || mode == CLEYTIN_GPIO_MODE_OUTPUT_PULLUP) ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE,
+        .pull_down_en = (mode == CLEYTIN_GPIO_MODE_INPUT_PULLDOWN || mode == CLEYTIN_GPIO_MODE_OUTPUT_PULLDOWN) ? GPIO_PULLDOWN_ENABLE : GPIO_PULLDOWN_DISABLE,
         .intr_type = intr,
     };
     return gpio_config(&pinConf);
@@ -30,7 +30,7 @@ sdmmc_card_t* cleytin_mount_fs() {
     if(card != NULL) {
         return card;
     }
-    cleytin_set_gpio_pin(2, CLEYTIN_GPIO_MODE_INPUT_PULLUP, GPIO_INTR_DISABLE);
+    cleytin_set_gpio_pin((gpio_num_t)2, CLEYTIN_GPIO_MODE_INPUT_PULLUP, GPIO_INTR_DISABLE);
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = false,
         .max_files = 5,
@@ -91,4 +91,8 @@ cleytin_load_rom_result_t cleytin_load_game_rom(const char *path) {
     fclose(f);
     cleytin_game_rom_load_progress = 100;
     return CLEYTIN_LOAD_ROM_RESULT_OK;
+}
+
+void cleytin_delay(const uint64_t ms) {
+    vTaskDelay(ms / portTICK_PERIOD_MS);
 }

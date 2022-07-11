@@ -5,6 +5,8 @@
 #include <esp_ipc.h>
 #include "cleytin_commons.h"
 
+extern "C" {
+
 int is_regular_file(const char *path);
 
 char *extract_game_rom_file_name(char *name);
@@ -12,3 +14,5 @@ char *extract_game_rom_file_name(char *name);
 void load_game_rom(void *path);
 
 char **list_valid_game_roms(size_t maxResults);
+
+}
