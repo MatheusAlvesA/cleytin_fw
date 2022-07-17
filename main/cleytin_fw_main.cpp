@@ -1,11 +1,14 @@
 #include "cleytin_engine.h"
-/*
 #include "cleytin_storage.h"
 
 #define MAX_ROM_LIST_SIZE 200
 
+extern "C" {
+
 void app_main(void)
 {
+    CleytinEngine engine;
+
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
 
     if(romList == NULL) {
@@ -17,7 +20,7 @@ void app_main(void)
     printf("Listando opções:\n");
     while(romList[i] != NULL) {
         if(firstRom == NULL) {
-            firstRom = malloc(400);
+            firstRom = (char*) malloc(400);
             strncpy(firstRom, romList[i], 256);
         }
         printf("%s\n", romList[i]);
@@ -44,9 +47,5 @@ void app_main(void)
     }
     printf("Não foi encontrada nenhuma game rom!\n");
 }
-*/
 
-extern "C" void app_main(void)
-{
-    CleytinEngine engine;
 }
