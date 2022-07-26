@@ -1,7 +1,7 @@
 #include "cleytin_engine.h"
 
 bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b) {
-    return a->getPriority() > b->getPriority();
+    return a->getPriority() < b->getPriority();
 }
 
 /* CleytinEngine */
@@ -142,7 +142,10 @@ void CEGraphicObject::setPos(uint8_t x, uint8_t y) {
 }
 
 bool CEGraphicObject::renderToBuffer(uint8_t *buff) {
-    return this->renderToBuffer(buff, this->getRenderWindow());
+    CERenderWindow *w = this->getRenderWindow();
+    bool result = this->renderToBuffer(buff, w);
+    delete w;
+    return result;
 }
 
 bool CEGraphicObject::getVisible() {
@@ -188,6 +191,7 @@ bool CEGraphicObject::setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state) 
 CERectangle::CERectangle() {
    this->width = 0;
    this->height = 0;
+   this->filled = false;
 }
 
 void CERectangle::setWidth(uint8_t w) {
@@ -215,19 +219,33 @@ CERenderWindow* CERectangle::getRenderWindow() {
     return window;
 }
 
+void CERectangle::setFilled(bool fill) {
+    this->filled = fill;
+}
+
+bool CERectangle::getFilled() {
+    return this->filled;
+}
+
 bool CERectangle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
     uint8_t startX = window->start->x;
     uint8_t startY = window->start->y;
     uint8_t endX = window->end->x;
     uint8_t endY = window->end->y;
-    delete window;
 
     uint8_t cursorY = startY;
     while(cursorY <= endY) {
         uint8_t cursorX = startX;
         while (cursorX <= endX)
         {
-            if(!this->setPixel(buff, cursorX, cursorY, true)) {
+            if(
+                !this->setPixel(
+                    buff,
+                    cursorX,
+                    cursorY,
+                    this->filled || cursorX == startX || cursorX == endX || cursorY == startY || cursorY == endY
+                )
+            ) {
                 return false;
             }
             cursorX++;

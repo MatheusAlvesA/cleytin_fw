@@ -62,6 +62,8 @@ public:
     CERectangle();
     void setWidth(uint8_t w);
     void setHeight(uint8_t h);
+    void setFilled(bool fill);
+    bool getFilled();
     uint8_t getWidth();
     uint8_t getHeight();
 
@@ -71,6 +73,7 @@ public:
 protected:
     uint8_t width;
     uint8_t height;
+    bool filled;
 };
 
 

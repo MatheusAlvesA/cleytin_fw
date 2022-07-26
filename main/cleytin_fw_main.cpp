@@ -8,6 +8,25 @@ extern "C" {
 void app_main(void)
 {
     CleytinEngine engine;
+    CERectangle *rec = new CERectangle();
+    rec->setPos(10, 10);
+    rec->setWidth(30);
+    rec->setHeight(10);
+    rec->setFilled(true);
+    rec->setPriority(2);
+
+    CERectangle *rec2 = new CERectangle();
+    rec2->setPos(5, 5);
+    rec2->setWidth(60);
+    rec2->setHeight(50);
+    rec2->setFilled(false);
+
+
+    engine.addObject(rec);
+    engine.addObject(rec2);
+
+    engine.render();
+    //while(1);
 
 /*
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
