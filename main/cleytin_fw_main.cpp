@@ -9,6 +9,7 @@ void app_main(void)
 {
     CleytinEngine engine;
 
+/*
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
 
     if(romList == NULL) {
@@ -46,6 +47,7 @@ void app_main(void)
         cleytin_reboot_and_load_game_rom();
     }
     printf("Não foi encontrada nenhuma game rom!\n");
+*/
 }
 
 }

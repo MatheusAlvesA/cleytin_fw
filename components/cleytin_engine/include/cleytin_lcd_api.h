@@ -12,6 +12,9 @@
 #define LCD_CMD_EXTENDED_SET 0x34
 #define LCD_CMD_GRAPH_MODE 0x36
 
+#define LCD_WIDTH_PX 128
+#define LCD_HEIGHT_PX 64
+
 class CleytinLCDAPI {
 public:
     void init();
