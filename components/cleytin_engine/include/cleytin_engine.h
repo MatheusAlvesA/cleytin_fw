@@ -1,28 +1,32 @@
 #ifndef CLEYTIN_ENGINE_H
 #define CLEYTIN_ENGINE_H
 
-#include <stdio.h>
 #include <vector>
 #include <algorithm>
+#include <math.h>
 #include "esp_system.h"
 #include "cleytin_lcd_api.h"
 
-class CEDot {
+#define PI 3.142857
+
+class CEPoint {
 public:
     uint8_t x;
     uint8_t y;
 
-    CEDot(uint8_t x, uint8_t y);
-    bool operator==(const CEDot &dot);
+    CEPoint(uint8_t x, uint8_t y);
+    bool operator==(const CEPoint &dot);
 };
 
 
 class CERenderWindow {
 public:
-    CERenderWindow(const CEDot &start, const CEDot &end);
+    CERenderWindow(const CEPoint &start, const CEPoint &end);
     ~CERenderWindow();
-    CEDot *start;
-    CEDot *end;
+    CEPoint *start;
+    CEPoint *end;
+
+    CEPoint* getCenterPoint();
 };
 
 
@@ -39,12 +43,14 @@ public:
     virtual void setPosX(uint8_t x);
     virtual void setPosY(uint8_t y);
     virtual void setPos(uint8_t x, uint8_t y);
+    virtual void setRotation(uint16_t rotation);
     // Getters
     virtual bool getVisible();
     virtual bool getColisionEnabled();
     virtual uint8_t getPriority();
     virtual uint8_t getPosX();
     virtual uint8_t getPosY();
+    virtual uint16_t getRotation();
 
 protected:
     bool visible;
@@ -52,8 +58,10 @@ protected:
     uint8_t priority;
     uint8_t posX;
     uint8_t posY;
+    uint16_t rotation;
 
     bool setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state);
+    bool rotatePixel(uint8_t &x, uint8_t &y, double rot);
 };
 
 

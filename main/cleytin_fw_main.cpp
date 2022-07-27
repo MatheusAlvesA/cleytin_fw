@@ -1,6 +1,8 @@
 #include "cleytin_engine.h"
 #include "cleytin_storage.h"
 
+#include "esp_timer.h"
+
 #define MAX_ROM_LIST_SIZE 200
 
 extern "C" {
@@ -26,6 +28,20 @@ void app_main(void)
     engine.addObject(rec2);
 
     engine.render();
+
+    uint16_t rot = 0;
+    while(1) {
+        rec->setRotation(rot);
+        rot += 2;
+        if(rot >= 360) {
+            rot = 0;
+        }
+        uint64_t start = esp_timer_get_time();
+        engine.render();
+        uint64_t end = esp_timer_get_time();
+        printf("%lld microsegundos passados\n", end-start);
+        cleytin_delay(1);
+    }
     //while(1);
 
 /*

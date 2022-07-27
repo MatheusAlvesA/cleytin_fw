@@ -83,27 +83,34 @@ uint8_t* CleytinEngine::getBuffer() {
 }
 
 
-/* CEDot */
+/* CEPoint */
 
-CEDot::CEDot(uint8_t x, uint8_t y) {
+CEPoint::CEPoint(uint8_t x, uint8_t y) {
     this->x = x;
     this->y = y;
 }
 
-bool CEDot::operator==(const CEDot &dot) {
+bool CEPoint::operator==(const CEPoint &dot) {
     return this->x == dot.x && this->y == dot.y;
 }
 
 /* CERenderWindow */
 
-CERenderWindow::CERenderWindow(const CEDot &start, const CEDot &end) {
-    this->start = new CEDot(start.x, start.y);
-    this->end = new CEDot(end.x, end.y);
+CERenderWindow::CERenderWindow(const CEPoint &start, const CEPoint &end) {
+    this->start = new CEPoint(start.x, start.y);
+    this->end = new CEPoint(end.x, end.y);
 }
 
 CERenderWindow::~CERenderWindow() {
     delete this->start;
     delete this->end;
+}
+
+CEPoint* CERenderWindow::getCenterPoint() {
+    return new CEPoint(
+        ((this->end->x - this->start->x) / 2) + this->start->x,
+        ((this->end->y - this->start->y) / 2) + this->start->y
+    );
 }
 
 /* CEGraphicObject */
@@ -114,6 +121,7 @@ CEGraphicObject::CEGraphicObject() {
     this->priority = 0;
     this->posX = 0;
     this->posY = 0;
+    this->rotation = 0;
 }
 
 void CEGraphicObject::setVisible(bool visible) {
@@ -134,6 +142,10 @@ void CEGraphicObject::setPosX(uint8_t posX) {
 
 void CEGraphicObject::setPosY(uint8_t posY) {
     this->posY = posY;
+}
+
+void CEGraphicObject::setRotation(uint16_t rotation) {
+    this->rotation = rotation % 360;
 }
 
 void CEGraphicObject::setPos(uint8_t x, uint8_t y) {
@@ -168,8 +180,38 @@ uint8_t CEGraphicObject::getPosY() {
     return this->posY;
 }
 
+uint16_t CEGraphicObject::getRotation() {
+    return this->rotation;
+}
+
+bool CEGraphicObject::rotatePixel(uint8_t &x, uint8_t &y, double rot) {
+    CERenderWindow *w = this->getRenderWindow();
+    CEPoint *center = w->getCenterPoint();
+    delete w;
+
+    int normX = (int) x - (int) center->x;
+    int normY = (int) y - (int) center->y;
+
+    rot = rot * (PI/180);
+    int newX = (normX * cos(rot) - normY * sin(rot)) + (int) center->x;
+    int newY = (normX * sin(rot) + normY * cos(rot)) + (int) center->y;
+    delete center;
+
+    if(
+        newX < 0 || newX >= LCD_WIDTH_PX ||
+        newY < 0 || newY >= LCD_HEIGHT_PX
+    ) {
+        return false;
+    }
+
+    x = (uint8_t) newX;
+    y = (uint8_t) newY;
+
+    return true;
+}
+
 bool CEGraphicObject::setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state) {
-    if(y >= LCD_HEIGHT_PX || x >= LCD_WIDTH_PX) {
+    if(!this->rotatePixel(x, y, (double) this->getRotation())) {
         return false;
     }
 
@@ -211,8 +253,8 @@ uint8_t CERectangle::getHeight() {
 }
 
 CERenderWindow* CERectangle::getRenderWindow() {
-    CEDot *start = new CEDot(this->posX, this->posY);
-    CEDot *end = new CEDot(this->posX + this->width, this->posY + this->height);
+    CEPoint *start = new CEPoint(this->posX, this->posY);
+    CEPoint *end = new CEPoint(this->posX + this->width, this->posY + this->height);
     CERenderWindow *window = new CERenderWindow(*start, *end);
     delete start;
     delete end;
@@ -234,6 +276,7 @@ bool CERectangle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
     uint8_t endY = window->end->y;
 
     uint8_t cursorY = startY;
+    bool allPixelRendered = true;
     while(cursorY <= endY) {
         uint8_t cursorX = startX;
         while (cursorX <= endX)
@@ -246,12 +289,12 @@ bool CERectangle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
                     this->filled || cursorX == startX || cursorX == endX || cursorY == startY || cursorY == endY
                 )
             ) {
-                return false;
+                allPixelRendered = false;
             }
             cursorX++;
         }
         cursorY++;
     }
     
-    return true;
+    return allPixelRendered;
 }
