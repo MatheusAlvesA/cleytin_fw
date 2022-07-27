@@ -1,8 +1,6 @@
 #include "cleytin_engine.h"
 #include "cleytin_storage.h"
 
-#include "soc/rtc_wdt.h"
-
 #define MAX_ROM_LIST_SIZE 200
 
 extern "C" {
@@ -32,15 +30,13 @@ void app_main(void)
     uint16_t rot = 0;
     while(1) {
         rec->setRotation(rot);
-        rot += 2;
+        rot += 1;
         if(rot >= 360) {
             rot = 0;
         }
         engine.render();
-        rtc_wdt_feed();
-        cleytin_delay(1);
+        //cleytin_delay(2000);
     }
-    //while(1);
 
 /*
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
