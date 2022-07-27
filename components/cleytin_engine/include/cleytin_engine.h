@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <algorithm>
-#include <math.h>
 #include "esp_system.h"
 #include "cleytin_lcd_api.h"
 
@@ -61,7 +60,7 @@ protected:
     uint16_t rotation;
 
     bool setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state);
-    bool rotatePixel(uint8_t &x, uint8_t &y, double rot);
+    bool rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot);
 };
 
 
