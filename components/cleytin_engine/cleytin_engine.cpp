@@ -1,5 +1,7 @@
 #include "cleytin_engine.h"
 
+static const char* TAG = "CE";
+
 bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b) {
     return a->getPriority() < b->getPriority();
 }
@@ -74,8 +76,15 @@ void CleytinEngine::sendBufferToLCD(uint8_t *buff) {
 }
 
 void CleytinEngine::render() {
+    uint64_t start = esp_timer_get_time();
     this->renderToBuffer();
+    uint64_t end = esp_timer_get_time();
+    ESP_LOGI(TAG, "%lld microsegundos passados no render\n", end-start);
+
+    start = esp_timer_get_time();
     this->sendBufferToLCD(this->buff);
+    end = esp_timer_get_time();
+    ESP_LOGI(TAG, "%lld microsegundos passados no envio\n", end-start);
 }
 
 uint8_t* CleytinEngine::getBuffer() {

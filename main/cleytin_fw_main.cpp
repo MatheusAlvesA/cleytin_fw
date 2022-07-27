@@ -1,7 +1,7 @@
 #include "cleytin_engine.h"
 #include "cleytin_storage.h"
 
-#include "esp_timer.h"
+#include "soc/rtc_wdt.h"
 
 #define MAX_ROM_LIST_SIZE 200
 
@@ -36,10 +36,8 @@ void app_main(void)
         if(rot >= 360) {
             rot = 0;
         }
-        uint64_t start = esp_timer_get_time();
         engine.render();
-        uint64_t end = esp_timer_get_time();
-        printf("%lld microsegundos passados\n", end-start);
+        rtc_wdt_feed();
         cleytin_delay(1);
     }
     //while(1);
