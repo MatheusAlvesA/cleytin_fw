@@ -10,12 +10,12 @@ void CleytinLCDAPI::init()
     this->sendByteToLCD(LCD_CMD_ON, true);
     this->sendByteToLCD(LCD_CMD_EXTENDED_SET, true);
     this->sendByteToLCD(LCD_CMD_GRAPH_MODE, true);
+    gpio_set_level(LCD_CLOCK_PIN, 0);
 }
 
 void CleytinLCDAPI::pulseClock() {
-    gpio_set_level(LCD_CLOCK_PIN, 0);
     gpio_set_level(LCD_CLOCK_PIN, 1);
-    cleytin_delay(0);
+    for (size_t i = 0; i < 100; i++);
     gpio_set_level(LCD_CLOCK_PIN, 0);
 }
 
