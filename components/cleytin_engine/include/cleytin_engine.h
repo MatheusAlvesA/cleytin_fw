@@ -37,6 +37,8 @@ public:
     virtual bool renderToBuffer(uint8_t *buff, CERenderWindow *window) = 0;
     // Setters
     virtual void setVisible(bool visible);
+    virtual void setMirrored(bool mirrored);
+    virtual void setNegative(bool negative);
     virtual void setColisionEnabled(bool enabled);
     virtual void setPriority(uint8_t priority);
     virtual void setPosX(uint8_t x);
@@ -45,6 +47,8 @@ public:
     virtual void setRotation(uint16_t rotation);
     // Getters
     virtual bool getVisible();
+    virtual bool getMirrored();
+    virtual bool getNegative();
     virtual bool getColisionEnabled();
     virtual uint8_t getPriority();
     virtual uint8_t getPosX();
@@ -54,6 +58,8 @@ public:
 protected:
     bool visible;
     bool colisionEnabled;
+    bool mirrored;
+    bool negative;
     uint8_t priority;
     uint8_t posX;
     uint8_t posY;
@@ -61,6 +67,7 @@ protected:
 
     bool setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state);
     bool rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot);
+    void mirrorPixel(uint8_t &x);
 };
 
 

@@ -130,6 +130,8 @@ CEPoint* CERenderWindow::getCenterPoint() {
 CEGraphicObject::CEGraphicObject() {
     this->colisionEnabled = true;
     this->visible = true;
+    this->mirrored = false;
+    this->negative = false;
     this->priority = 0;
     this->posX = 0;
     this->posY = 0;
@@ -138,6 +140,14 @@ CEGraphicObject::CEGraphicObject() {
 
 void CEGraphicObject::setVisible(bool visible) {
     this->visible = visible;
+}
+
+void CEGraphicObject::setMirrored(bool mirrored) {
+    this->mirrored = mirrored;
+}
+
+void CEGraphicObject::setNegative(bool negative) {
+    this->negative = negative;
 }
 
 void CEGraphicObject::setColisionEnabled(bool enabled) {
@@ -166,6 +176,9 @@ void CEGraphicObject::setPos(uint8_t x, uint8_t y) {
 }
 
 bool CEGraphicObject::renderToBuffer(uint8_t *buff) {
+    if(!this->getVisible()) {
+        return true;
+    }
     CERenderWindow *w = this->getRenderWindow();
     bool result = this->renderToBuffer(buff, w);
     delete w;
@@ -174,6 +187,14 @@ bool CEGraphicObject::renderToBuffer(uint8_t *buff) {
 
 bool CEGraphicObject::getVisible() {
     return this->visible;
+}
+
+bool CEGraphicObject::getMirrored() {
+    return this->mirrored;
+}
+
+bool CEGraphicObject::getNegative() {
+    return this->negative;
 }
 
 bool CEGraphicObject::getColisionEnabled() {
@@ -194,6 +215,16 @@ uint8_t CEGraphicObject::getPosY() {
 
 uint16_t CEGraphicObject::getRotation() {
     return this->rotation;
+}
+
+void CEGraphicObject::mirrorPixel(uint8_t &x) {
+    CERenderWindow *w = this->getRenderWindow();
+    CEPoint *c = w->getCenterPoint();
+    uint8_t centerX = c->x;
+    delete w;
+    delete c;
+
+    x = ((int)centerX - (int)x) + centerX;
 }
 
 bool CEGraphicObject::rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot) {
@@ -229,6 +260,9 @@ bool CEGraphicObject::rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot) {
 }
 
 bool CEGraphicObject::setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state) {
+    if(this->getMirrored()) {
+        this->mirrorPixel(x);
+    }
     if(!this->rotatePixel(x, y, this->getRotation())) {
         return false;
     }
@@ -236,7 +270,7 @@ bool CEGraphicObject::setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state) 
     unsigned int bitPos = x + (y * LCD_WIDTH_PX);
     unsigned int bytePos = bitPos / 8;
     unsigned int bitOffset = bitPos % 8;
-    if(state) {
+    if((state && !this->getNegative()) || (!state && this->getNegative())) {
         buff[bytePos] |= 1 << (7 - bitOffset);
     } else {
         buff[bytePos] &= ~(1 << (7 - bitOffset));
