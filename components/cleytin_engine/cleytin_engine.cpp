@@ -65,6 +65,40 @@ std::vector<size_t>* CleytinEngine::getObjectsAt(CEPoint *point) {
     return r;
 }
 
+std::vector<size_t>* CleytinEngine::getCollisionsOn(size_t index) {
+    std::vector<size_t> *r = new std::vector<size_t>();
+    if(index >= this->objects.size()) {
+        return r;
+    }
+    CEGraphicObject *object = this->objects[index];
+    if(!object->getColisionEnabled()) {
+        return r;
+    }
+    CERenderWindow *target = object->getRenderWindow();
+    target->expand(1);
+    target->rotate(object->getRotation());
+
+    for (size_t i = 0; i < this->objects.size(); i++) {
+        if(i == index || !this->objects[i]->getColisionEnabled()) {
+            continue;
+        }
+        CERenderWindow *candidate = this->objects[i]->getRenderWindow();
+        candidate->rotate(this->objects[i]->getRotation());
+        if(
+            target->containsPoint(candidate->topLeft) ||
+            target->containsPoint(candidate->topRight) ||
+            target->containsPoint(candidate->bottomLeft) ||
+            target->containsPoint(candidate->bottomRight)
+        ) {
+            r->push_back(i);
+        }
+        delete candidate;
+    }
+    delete target;
+
+    return r;
+}
+
 size_t CleytinEngine::getObjectsCount() {
     return this->objects.size();
 }
@@ -222,6 +256,45 @@ void CERenderWindow::rotate(uint16_t degrees) {
     this->bottomRight->rotate(center, degrees);
     delete center;
 }
+
+bool CERenderWindow::containsPoint(CEPoint *point) {
+    CELine *topLine = this->getTopLine();
+    CELine *bottomLine = this->getBottomLine();
+    CELine *leftLine = this->getLeftLine();
+    CELine *rightLine = this->getRightLine();
+
+    bool r = false;
+    if(
+        topLine->calculateSideOfPoint(point) >= 0 &&
+        bottomLine->calculateSideOfPoint(point) >= 0 &&
+        leftLine->calculateSideOfPoint(point) >= 0 &&
+        rightLine->calculateSideOfPoint(point) >= 0
+    ) {
+        r = true;
+    }
+
+    delete topLine;
+    delete bottomLine;
+    delete leftLine;
+    delete rightLine;
+
+    return r;
+}
+
+void CERenderWindow::expand(uint8_t size) {
+    if(size >= LCD_HEIGHT_PX || size >= LCD_WIDTH_PX) {
+        return;
+    }
+    this->topLeft->x -= this->topLeft->x >= size ? size : 0;
+    this->topLeft->y -= this->topLeft->y >= size ? size : 0;
+    this->topRight->x += this->topRight->x < (LCD_WIDTH_PX-size) ? size : 0;
+    this->topRight->y -= this->topRight->y >= size ? size : 0;
+    this->bottomLeft->x -= this->bottomLeft->x >= size ? size : 0;
+    this->bottomLeft->y += this->bottomLeft->y < (LCD_HEIGHT_PX-size) ? size : 0;
+    this->bottomRight->x += this->bottomRight->x < (LCD_WIDTH_PX-size) ? size : 0;
+    this->bottomRight->y += this->bottomRight->y < (LCD_HEIGHT_PX-size) ? size : 0;
+}
+
 
 
 /* CEGraphicObject */
@@ -381,28 +454,8 @@ bool CEGraphicObject::setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state) 
 bool CEGraphicObject::containsPoint(CEPoint *point) {
     CERenderWindow *w = this->getRenderWindow();
     w->rotate(this->getRotation());
-
-    CELine *topLine = w->getTopLine();
-    CELine *bottomLine = w->getBottomLine();
-    CELine *leftLine = w->getLeftLine();
-    CELine *rightLine = w->getRightLine();
+    bool r = w->containsPoint(point);
     delete w;
-
-    bool r = false;
-    if(
-        topLine->calculateSideOfPoint(point) >= 0 &&
-        bottomLine->calculateSideOfPoint(point) >= 0 &&
-        leftLine->calculateSideOfPoint(point) >= 0 &&
-        rightLine->calculateSideOfPoint(point) >= 0
-    ) {
-        r = true;
-    }
-
-    delete topLine;
-    delete bottomLine;
-    delete leftLine;
-    delete rightLine;
-
     return r;
 }
 

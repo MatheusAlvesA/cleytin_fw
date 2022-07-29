@@ -45,6 +45,9 @@ public:
     CELine* getLeftLine();
     CELine* getRightLine();
 
+    bool containsPoint(CEPoint *point);
+    void expand(uint8_t size);
+
     void rotate(uint16_t degrees);
 };
 
@@ -54,6 +57,7 @@ public:
     virtual CERenderWindow* getRenderWindow() = 0;
     virtual bool renderToBuffer(uint8_t *buff);
     virtual bool renderToBuffer(uint8_t *buff, CERenderWindow *window) = 0;
+    virtual bool containsPoint(CEPoint *point);
     // Setters
     virtual void setVisible(bool visible);
     virtual void setMirrored(bool mirrored);
@@ -73,7 +77,6 @@ public:
     virtual uint8_t getPosX();
     virtual uint8_t getPosY();
     virtual uint16_t getRotation();
-    virtual bool containsPoint(CEPoint *point);
 
 protected:
     bool visible;
@@ -119,6 +122,7 @@ public:
     unsigned int addObject(CEGraphicObject *obj);
     bool removeObject(CEGraphicObject *obj);
     bool removeObjectAt(size_t index);
+    std::vector<size_t>* getCollisionsOn(size_t index);
     CEGraphicObject* getObjectAt(size_t index);
     std::vector<size_t>* getObjectsAt(CEPoint *point);
     size_t getObjectsCount();
