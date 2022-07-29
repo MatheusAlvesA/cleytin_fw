@@ -15,19 +15,38 @@ public:
 
     CEPoint(uint8_t x, uint8_t y);
     bool operator==(const CEPoint &dot);
+
+    void rotate(CEPoint *rotationCenter, uint16_t degrees);
 };
 
+
+class CELine {
+public:
+    CELine(const CEPoint &start, const CEPoint &end);
+    ~CELine();
+    CEPoint *start;
+    CEPoint *end;
+
+    int calculateSideOfPoint(CEPoint *point);
+};
 
 class CERenderWindow {
 public:
     CERenderWindow(const CEPoint &start, const CEPoint &end);
     ~CERenderWindow();
-    CEPoint *start;
-    CEPoint *end;
+    CEPoint *topLeft;
+    CEPoint *topRight;
+    CEPoint *bottomLeft;
+    CEPoint *bottomRight;
 
     CEPoint* getCenterPoint();
-};
+    CELine* getTopLine();
+    CELine* getBottomLine();
+    CELine* getLeftLine();
+    CELine* getRightLine();
 
+    void rotate(uint16_t degrees);
+};
 
 class CEGraphicObject {
 public:
@@ -54,6 +73,7 @@ public:
     virtual uint8_t getPosX();
     virtual uint8_t getPosY();
     virtual uint16_t getRotation();
+    virtual bool containsPoint(CEPoint *point);
 
 protected:
     bool visible;
@@ -100,6 +120,7 @@ public:
     bool removeObject(CEGraphicObject *obj);
     bool removeObjectAt(size_t index);
     CEGraphicObject* getObjectAt(size_t index);
+    std::vector<size_t>* getObjectsAt(CEPoint *point);
     size_t getObjectsCount();
     void renderToBuffer();
     uint8_t* getBuffer();

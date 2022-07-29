@@ -55,6 +55,16 @@ bool CleytinEngine::removeObjectAt(size_t index) {
     return true;
 }
 
+std::vector<size_t>* CleytinEngine::getObjectsAt(CEPoint *point) {
+    std::vector<size_t> *r = new std::vector<size_t>();
+    for (size_t i = 0; i < this->objects.size(); i++) {
+        if(this->objects[i]->containsPoint(point)) {
+            r->push_back(i);
+        }
+    }
+    return r;
+}
+
 size_t CleytinEngine::getObjectsCount() {
     return this->objects.size();
 }
@@ -106,24 +116,113 @@ bool CEPoint::operator==(const CEPoint &dot) {
     return this->x == dot.x && this->y == dot.y;
 }
 
-/* CERenderWindow */
+void CEPoint::rotate(CEPoint *rotationCenter, uint16_t degrees) {
+    if(degrees == 0) {
+        return;
+    }
 
-CERenderWindow::CERenderWindow(const CEPoint &start, const CEPoint &end) {
+    int normX = (int) this->x - (int) rotationCenter->x;
+    int normY = (int) this->y - (int) rotationCenter->y;
+
+    int newX = (normX * cosLookUp[degrees] - normY * sinLookUp[degrees]) + (int) rotationCenter->x;
+    int newY = (normX * sinLookUp[degrees] + normY * cosLookUp[degrees]) + (int) rotationCenter->y;
+
+    this->x = (uint8_t) newX;
+    this->y = (uint8_t) newY;
+}
+
+
+/* CELine */
+
+CELine::CELine(const CEPoint &start, const CEPoint &end) {
     this->start = new CEPoint(start.x, start.y);
     this->end = new CEPoint(end.x, end.y);
 }
 
-CERenderWindow::~CERenderWindow() {
+CELine::~CELine() {
     delete this->start;
     delete this->end;
 }
 
+int CELine::calculateSideOfPoint(CEPoint* point) {
+    return ((int)point->y - (int)this->start->y) * ((int)this->end->x - (int)this->start->x)
+           - ((int)point->x - (int)this->start->x) * ((int)this->end->y - (int)this->start->y);
+}
+
+
+/* CERenderWindow */
+
+CERenderWindow::CERenderWindow(const CEPoint &start, const CEPoint &end) {
+    this->topLeft = new CEPoint(start.x, start.y);
+    this->bottomRight = new CEPoint(end.x, end.y);
+    this->topRight = new CEPoint(end.x, start.y);
+    this->bottomLeft = new CEPoint(start.x, end.y);
+}
+
+CERenderWindow::~CERenderWindow() {
+    delete this->topLeft;
+    delete this->topRight;
+    delete this->bottomLeft;
+    delete this->bottomRight;
+}
+
 CEPoint* CERenderWindow::getCenterPoint() {
     return new CEPoint(
-        ((this->end->x - this->start->x) / 2) + this->start->x,
-        ((this->end->y - this->start->y) / 2) + this->start->y
+        ((this->bottomRight->x - this->topLeft->x) / 2) + this->topLeft->x,
+        ((this->bottomRight->y - this->topLeft->y) / 2) + this->topLeft->y
     );
 }
+
+CELine* CERenderWindow::getTopLine() {
+    CEPoint *start = new CEPoint(this->topRight->x, this->topRight->y);
+    CEPoint *end = new CEPoint(this->topLeft->x, this->topLeft->y);
+    CELine *r = new CELine(*start, *end);
+    delete start;
+    delete end;
+    return r;
+}
+
+CELine* CERenderWindow::getBottomLine() {
+    CEPoint *start = new CEPoint(this->bottomLeft->x, this->bottomLeft->y);
+    CEPoint *end = new CEPoint(this->bottomRight->x, this->bottomRight->y);
+    CELine *r = new CELine(*start, *end);
+    delete start;
+    delete end;
+    return r;
+}
+
+CELine* CERenderWindow::getLeftLine() {
+    CEPoint *start = new CEPoint(this->topLeft->x, this->topLeft->y);
+    CEPoint *end = new CEPoint(this->bottomLeft->x, this->bottomLeft->y);
+    CELine *r = new CELine(*start, *end);
+    delete start;
+    delete end;
+    return r;
+}
+
+CELine* CERenderWindow::getRightLine() {
+    CEPoint *start = new CEPoint(this->bottomRight->x, this->bottomRight->y);
+    CEPoint *end = new CEPoint(this->topRight->x, this->topRight->y);
+    CELine *r = new CELine(*start, *end);
+    delete start;
+    delete end;
+    return r;
+}
+
+void CERenderWindow::rotate(uint16_t degrees) {
+    if(degrees == 0) {
+        return;
+    }
+
+    CEPoint *center = this->getCenterPoint();
+
+    this->topLeft->rotate(center, degrees);
+    this->topRight->rotate(center, degrees);
+    this->bottomLeft->rotate(center, degrees);
+    this->bottomRight->rotate(center, degrees);
+    delete center;
+}
+
 
 /* CEGraphicObject */
 
@@ -279,6 +378,34 @@ bool CEGraphicObject::setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state) 
     return true;
 }
 
+bool CEGraphicObject::containsPoint(CEPoint *point) {
+    CERenderWindow *w = this->getRenderWindow();
+    w->rotate(this->getRotation());
+
+    CELine *topLine = w->getTopLine();
+    CELine *bottomLine = w->getBottomLine();
+    CELine *leftLine = w->getLeftLine();
+    CELine *rightLine = w->getRightLine();
+    delete w;
+
+    bool r = false;
+    if(
+        topLine->calculateSideOfPoint(point) >= 0 &&
+        bottomLine->calculateSideOfPoint(point) >= 0 &&
+        leftLine->calculateSideOfPoint(point) >= 0 &&
+        rightLine->calculateSideOfPoint(point) >= 0
+    ) {
+        r = true;
+    }
+
+    delete topLine;
+    delete bottomLine;
+    delete leftLine;
+    delete rightLine;
+
+    return r;
+}
+
 
 /* CERectangle */
 
@@ -322,10 +449,10 @@ bool CERectangle::getFilled() {
 }
 
 bool CERectangle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
-    uint8_t startX = window->start->x;
-    uint8_t startY = window->start->y;
-    uint8_t endX = window->end->x;
-    uint8_t endY = window->end->y;
+    uint8_t startX = window->topLeft->x;
+    uint8_t startY = window->topLeft->y;
+    uint8_t endX = window->bottomRight->x;
+    uint8_t endY = window->bottomRight->y;
 
     uint8_t cursorY = startY;
     bool allPixelRendered = true;
