@@ -55,6 +55,16 @@ bool CleytinEngine::removeObjectAt(size_t index) {
     return true;
 }
 
+size_t CleytinEngine::getObjectIndex(CEGraphicObject* obj) {
+    for (size_t i = 0; i < this->objects.size(); i++)
+    {
+        if(obj == this->objects[i]) {
+            return i;
+        }
+    }
+    return this->objects.size()+1;
+}
+
 std::vector<size_t>* CleytinEngine::getObjectsAt(CEPoint *point) {
     std::vector<size_t> *r = new std::vector<size_t>();
     for (size_t i = 0; i < this->objects.size(); i++) {
@@ -263,12 +273,25 @@ bool CERenderWindow::containsPoint(CEPoint *point) {
     CELine *leftLine = this->getLeftLine();
     CELine *rightLine = this->getRightLine();
 
+    int relativeTop = topLine->calculateSideOfPoint(point);
+    int relativeBottom = bottomLine->calculateSideOfPoint(point);
+    int relativeLeft = leftLine->calculateSideOfPoint(point);
+    int relativeRight = rightLine->calculateSideOfPoint(point);
+
     bool r = false;
     if(
-        topLine->calculateSideOfPoint(point) >= 0 &&
-        bottomLine->calculateSideOfPoint(point) >= 0 &&
-        leftLine->calculateSideOfPoint(point) >= 0 &&
-        rightLine->calculateSideOfPoint(point) >= 0
+        (
+            relativeTop >= 0 &&
+            relativeBottom >= 0 &&
+            relativeLeft >= 0 &&
+            relativeRight >= 0
+        ) ||
+        (
+            relativeTop <= 0 &&
+            relativeBottom <= 0 &&
+            relativeLeft <= 0 &&
+            relativeRight <= 0
+        )
     ) {
         r = true;
     }

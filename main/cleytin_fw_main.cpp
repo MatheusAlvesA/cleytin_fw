@@ -27,6 +27,15 @@ void app_main(void)
 
     engine.render();
 
+    std::vector<size_t> *lista = engine.getCollisionsOn(0);
+    printf("Encontrados: %d\n", lista->size());
+    for (size_t i = 0; i < lista->size(); i++)
+    {
+        printf("Indice: %d\n", (*lista)[i]);
+    }
+    
+
+/*
     uint16_t rot = 0;
     while(1) {
         rec->setRotation(rot);
@@ -37,7 +46,7 @@ void app_main(void)
         engine.render();
         //cleytin_delay(2000);
     }
-
+*/
 /*
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
 

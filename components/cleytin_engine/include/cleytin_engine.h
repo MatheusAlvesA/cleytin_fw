@@ -125,6 +125,7 @@ public:
     std::vector<size_t>* getCollisionsOn(size_t index);
     CEGraphicObject* getObjectAt(size_t index);
     std::vector<size_t>* getObjectsAt(CEPoint *point);
+    size_t getObjectIndex(CEGraphicObject* obj);
     size_t getObjectsCount();
     void renderToBuffer();
     uint8_t* getBuffer();
