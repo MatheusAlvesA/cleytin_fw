@@ -505,11 +505,6 @@ bool CEGraphicObject::containsPoint(CEPoint *point, uint8_t expand) {
 }
 
 bool CEGraphicObject::containsAnyPointsFrom(std::vector<CEPoint *> *points, const uint8_t expand) {
-    ESP_LOGI(TAG, "%d pontos passados x0: %d e y0: %d", points->size(), (*points)[0]->x, (*points)[0]->y);
-    ESP_LOGI(TAG, "%d pontos passados x1: %d e y1: %d", points->size(), (*points)[1]->x, (*points)[1]->y);
-    ESP_LOGI(TAG, "%d pontos passados x2: %d e y2: %d", points->size(), (*points)[2]->x, (*points)[2]->y);
-    ESP_LOGI(TAG, "%d pontos passados x3: %d e y3: %d", points->size(), (*points)[3]->x, (*points)[3]->y);
-
     for (size_t i = 0; i < points->size(); i++)
     {
         if(this->containsPoint((*points)[i], expand)) {
