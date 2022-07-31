@@ -9,7 +9,7 @@ void app_main(void)
 {
     CleytinEngine engine;
     CERectangle *rec = new CERectangle();
-    rec->setPos(10, 10);
+    rec->setPos(67, 10);
     rec->setWidth(30);
     rec->setHeight(10);
     rec->setFilled(true);
@@ -19,7 +19,6 @@ void app_main(void)
     rec2->setPos(5, 5);
     rec2->setWidth(60);
     rec2->setHeight(50);
-    rec2->setRotation(50);
     rec2->setFilled(false);
 
 
@@ -28,7 +27,7 @@ void app_main(void)
 
     engine.render();
 
-    std::vector<size_t> *lista = engine.getCollisionsOn(1);
+    std::vector<size_t> *lista = engine.getCollisionsOn(0);
     printf("Encontrados: %d\n", lista->size());
     for (size_t i = 0; i < lista->size(); i++)
     {

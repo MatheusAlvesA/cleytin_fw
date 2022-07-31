@@ -154,7 +154,7 @@ uint8_t* CleytinEngine::getBuffer() {
 
 /* CEPoint */
 
-CEPoint::CEPoint(uint8_t x, uint8_t y) {
+CEPoint::CEPoint(int x, int y) {
     this->x = x;
     this->y = y;
 }
@@ -168,17 +168,14 @@ void CEPoint::rotate(CEPoint *rotationCenter, uint16_t degrees) {
         return;
     }
 
-    int normX = (int) this->x - (int) rotationCenter->x;
-    int normY = (int) this->y - (int) rotationCenter->y;
+    int normX = this->x - rotationCenter->x;
+    int normY = this->y - rotationCenter->y;
 
-    int newX = (normX * cosLookUp[degrees] - normY * sinLookUp[degrees]) + (int) rotationCenter->x;
-    int newY = (normX * sinLookUp[degrees] + normY * cosLookUp[degrees]) + (int) rotationCenter->y;
-
-    this->x = (uint8_t) newX;
-    this->y = (uint8_t) newY;
+    this->x = (normX * cosLookUp[degrees] - normY * sinLookUp[degrees]) + rotationCenter->x;
+    this->y = (normX * sinLookUp[degrees] + normY * cosLookUp[degrees]) + rotationCenter->y;
 }
 
-CEPoint * CEPoint::clone() {
+CEPoint* CEPoint::clone() {
     return new CEPoint(this->x, this->y);
 }
 
@@ -196,8 +193,8 @@ CELine::~CELine() {
 }
 
 int CELine::calculateSideOfPoint(CEPoint* point) {
-    return ((int)point->y - (int)this->start->y) * ((int)this->end->x - (int)this->start->x)
-           - ((int)point->x - (int)this->start->x) * ((int)this->end->y - (int)this->start->y);
+    return (point->y - this->start->y) * (this->end->x - this->start->x)
+           - (point->x - this->start->x) * (this->end->y - this->start->y);
 }
 
 
@@ -427,14 +424,14 @@ uint16_t CEGraphicObject::getRotation() {
     return this->rotation;
 }
 
-void CEGraphicObject::mirrorPixel(uint8_t &x) {
+void CEGraphicObject::mirrorPixel(int &x) {
     CERenderWindow *w = this->getRenderWindow();
     CEPoint *c = w->getCenterPoint();
-    uint8_t centerX = c->x;
+    int centerX = c->x;
     delete w;
     delete c;
 
-    x = ((int)centerX - (int)x) + centerX;
+    x = (centerX - x) + centerX;
 }
 
 std::vector<CEPoint *> *CEGraphicObject::getAllRenderWindowPoints() {
@@ -446,7 +443,7 @@ std::vector<CEPoint *> *CEGraphicObject::getAllRenderWindowPoints() {
     return r;
 }
 
-bool CEGraphicObject::rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot) {
+bool CEGraphicObject::rotatePixel(int &x, int &y, uint16_t rot) {
     if(rot == 0) {
         if(x >= LCD_WIDTH_PX || y >= LCD_HEIGHT_PX) {
             return false;
@@ -458,11 +455,11 @@ bool CEGraphicObject::rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot) {
     CEPoint *center = w->getCenterPoint();
     delete w;
 
-    int normX = (int) x - (int) center->x;
-    int normY = (int) y - (int) center->y;
+    int normX = x - center->x;
+    int normY = y - center->y;
 
-    int newX = (normX * cosLookUp[rot] - normY * sinLookUp[rot]) + (int) center->x;
-    int newY = (normX * sinLookUp[rot] + normY * cosLookUp[rot]) + (int) center->y;
+    int newX = (normX * cosLookUp[rot] - normY * sinLookUp[rot]) + center->x;
+    int newY = (normX * sinLookUp[rot] + normY * cosLookUp[rot]) + center->y;
     delete center;
 
     if(
@@ -472,13 +469,13 @@ bool CEGraphicObject::rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot) {
         return false;
     }
 
-    x = (uint8_t) newX;
-    y = (uint8_t) newY;
+    x = newX;
+    y = newY;
 
     return true;
 }
 
-bool CEGraphicObject::setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state) {
+bool CEGraphicObject::setPixel(uint8_t *buff, int x, int y, bool state) {
     if(this->getMirrored()) {
         this->mirrorPixel(x);
     }
@@ -508,9 +505,14 @@ bool CEGraphicObject::containsPoint(CEPoint *point, uint8_t expand) {
 }
 
 bool CEGraphicObject::containsAnyPointsFrom(std::vector<CEPoint *> *points, const uint8_t expand) {
+    ESP_LOGI(TAG, "%d pontos passados x0: %d e y0: %d", points->size(), (*points)[0]->x, (*points)[0]->y);
+    ESP_LOGI(TAG, "%d pontos passados x1: %d e y1: %d", points->size(), (*points)[1]->x, (*points)[1]->y);
+    ESP_LOGI(TAG, "%d pontos passados x2: %d e y2: %d", points->size(), (*points)[2]->x, (*points)[2]->y);
+    ESP_LOGI(TAG, "%d pontos passados x3: %d e y3: %d", points->size(), (*points)[3]->x, (*points)[3]->y);
+
     for (size_t i = 0; i < points->size(); i++)
     {
-        if(this->containsPoint((*points)[i])) {
+        if(this->containsPoint((*points)[i], expand)) {
             return true;
         }
     }
@@ -542,8 +544,8 @@ uint8_t CERectangle::getHeight() {
 }
 
 CERenderWindow* CERectangle::getRenderWindow() {
-    CEPoint *start = new CEPoint(this->posX, this->posY);
-    CEPoint *end = new CEPoint(this->posX + this->width, this->posY + this->height);
+    CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
+    CEPoint *end = new CEPoint((int) (this->posX + this->width), (int) (this->posY + this->height));
     CERenderWindow *window = new CERenderWindow(*start, *end);
     delete start;
     delete end;
@@ -559,15 +561,15 @@ bool CERectangle::getFilled() {
 }
 
 bool CERectangle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
-    uint8_t startX = window->topLeft->x;
-    uint8_t startY = window->topLeft->y;
-    uint8_t endX = window->bottomRight->x;
-    uint8_t endY = window->bottomRight->y;
+    int startX = window->topLeft->x;
+    int startY = window->topLeft->y;
+    int endX = window->bottomRight->x;
+    int endY = window->bottomRight->y;
 
-    uint8_t cursorY = startY;
+    int cursorY = startY;
     bool allPixelRendered = true;
     while(cursorY <= endY) {
-        uint8_t cursorX = startX;
+        int cursorX = startX;
         while (cursorX <= endX)
         {
             if(

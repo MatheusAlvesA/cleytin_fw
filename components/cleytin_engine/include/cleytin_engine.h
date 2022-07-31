@@ -10,10 +10,10 @@
 
 class CEPoint {
 public:
-    uint8_t x;
-    uint8_t y;
+    int x;
+    int y;
 
-    CEPoint(uint8_t x, uint8_t y);
+    CEPoint(int x, int y);
     bool operator==(const CEPoint &dot);
 
     void rotate(CEPoint *rotationCenter, uint16_t degrees);
@@ -93,9 +93,9 @@ protected:
     uint8_t posY;
     uint16_t rotation;
 
-    bool setPixel(uint8_t *buff, uint8_t x, uint8_t y, bool state);
-    bool rotatePixel(uint8_t &x, uint8_t &y, uint16_t rot);
-    void mirrorPixel(uint8_t &x);
+    bool setPixel(uint8_t *buff, int x, int y, bool state);
+    bool rotatePixel(int &x, int &y, uint16_t rot);
+    void mirrorPixel(int &x);
 };
 
 
