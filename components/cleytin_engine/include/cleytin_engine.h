@@ -17,6 +17,7 @@ public:
     bool operator==(const CEPoint &dot);
 
     void rotate(CEPoint *rotationCenter, uint16_t degrees);
+    CEPoint * clone();
 };
 
 
@@ -45,6 +46,8 @@ public:
     CELine* getLeftLine();
     CELine* getRightLine();
 
+    std::vector<CEPoint*>* getAllPoints();
+
     bool containsPoint(CEPoint *point);
     void expand(uint8_t size);
 
@@ -57,7 +60,9 @@ public:
     virtual CERenderWindow* getRenderWindow() = 0;
     virtual bool renderToBuffer(uint8_t *buff);
     virtual bool renderToBuffer(uint8_t *buff, CERenderWindow *window) = 0;
-    virtual bool containsPoint(CEPoint *point);
+    virtual bool containsPoint(CEPoint *point, uint8_t expand = 0);
+    virtual bool containsAnyPointsFrom(std::vector<CEPoint *> *points, const uint8_t expand = 0);
+    virtual std::vector<CEPoint *> *getAllRenderWindowPoints();
     // Setters
     virtual void setVisible(bool visible);
     virtual void setMirrored(bool mirrored);
