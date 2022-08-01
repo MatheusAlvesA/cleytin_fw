@@ -6,6 +6,8 @@
 #include "esp_system.h"
 #include "cleytin_lcd_api.h"
 
+#include <math.h> //TODO requerido apenas pelo circulo, refatorar para arquivo separado
+
 #define PI 3.142857
 
 class CEPoint {
@@ -18,6 +20,7 @@ public:
 
     void rotate(CEPoint *rotationCenter, uint16_t degrees);
     CEPoint * clone();
+    unsigned int distanceTo(const CEPoint point);
 };
 
 
@@ -115,6 +118,26 @@ public:
 protected:
     uint8_t width;
     uint8_t height;
+    bool filled;
+};
+
+
+class CECircle : public CEGraphicObject {
+public:
+    CECircle();
+    void setRadius(uint8_t r);
+    void setFilled(bool fill);
+    void setRotation(uint16_t rotation);
+
+    uint8_t getRadius();
+    bool getFilled();
+    virtual uint16_t getRotation();
+
+    CERenderWindow* getRenderWindow();
+    bool renderToBuffer(uint8_t *buff, CERenderWindow *window);
+
+protected:
+    uint8_t radius;
     bool filled;
 };
 

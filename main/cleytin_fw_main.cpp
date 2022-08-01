@@ -15,6 +15,12 @@ void app_main(void)
     rec->setFilled(true);
     rec->setPriority(2);
 
+    CECircle *circ = new CECircle();
+    circ->setPos(10, 10);
+    circ->setRadius(10);
+    circ->setFilled(true);
+    circ->setPriority(2);
+
     CERectangle *rec2 = new CERectangle();
     rec2->setPos(5, 5);
     rec2->setWidth(60);
@@ -24,6 +30,7 @@ void app_main(void)
 
     engine.addObject(rec);
     engine.addObject(rec2);
+    engine.addObject(circ);
 
     engine.render();
 
