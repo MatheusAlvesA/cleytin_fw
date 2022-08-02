@@ -17,7 +17,7 @@ void app_main(void)
 
     CECircle *circ = new CECircle();
     circ->setPos(10, 10);
-    circ->setRadius(10);
+    circ->setRadius(20);
     circ->setFilled(true);
     circ->setPriority(2);
 

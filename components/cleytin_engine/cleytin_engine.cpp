@@ -180,10 +180,10 @@ CEPoint* CEPoint::clone() {
 }
 
 unsigned int CEPoint::distanceTo(const CEPoint point) {
-    int dX = this->x - point.y;
+    int dX = this->x - point.x;
     int dY = this->y - point.y;
 
-    return (unsigned int) sqrt(dX*dX + dY*dY);
+    return (unsigned int) round(sqrt(dX*dX + dY*dY));
 }
 
 /* CELine */
@@ -656,7 +656,7 @@ bool CECircle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
                     buff,
                     cursorX,
                     cursorY,
-                    this->filled || distanceToCenter == this->getRadius()
+                    this->filled || distanceToCenter == (this->getRadius() - 1)
                 )
             ) {
                 allPixelRendered = false;
