@@ -1,4 +1,6 @@
 #include "cleytin_engine.h"
+#include "ce_rectangle.h"
+#include "ce_circle.h"
 #include "cleytin_storage.h"
 
 #define MAX_ROM_LIST_SIZE 200
