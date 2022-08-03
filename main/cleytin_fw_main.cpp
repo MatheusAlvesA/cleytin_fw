@@ -1,6 +1,6 @@
 #include "cleytin_engine.h"
 #include "ce_rectangle.h"
-#include "ce_circle.h"
+#include "ce_bitmap.h"
 #include "cleytin_storage.h"
 
 #define MAX_ROM_LIST_SIZE 200
@@ -11,17 +11,20 @@ void app_main(void)
 {
     CleytinEngine engine;
     CERectangle *rec = new CERectangle();
-    rec->setPos(67, 10);
-    rec->setWidth(30);
-    rec->setHeight(10);
+    rec->setPos(0, 10);
+    rec->setWidth(5);
+    rec->setHeight(5);
     rec->setFilled(true);
     rec->setPriority(2);
 
-    CECircle *circ = new CECircle();
-    circ->setPos(10, 10);
-    circ->setRadius(20);
-    circ->setFilled(true);
-    circ->setPriority(2);
+    CEBitmap *bmap = new CEBitmap();
+    uint8_t *buff = (uint8_t *) malloc(2);
+    buff[0] = 0b11111001;
+    buff[1] = 0b10011111;
+    bmap->setPos(10, 10);
+    bmap->setWidth(4);
+    bmap->setHeight(4);
+    bmap->setBuffer(buff);
 
     CERectangle *rec2 = new CERectangle();
     rec2->setPos(5, 5);
@@ -32,7 +35,7 @@ void app_main(void)
 
     engine.addObject(rec);
     engine.addObject(rec2);
-    engine.addObject(circ);
+    engine.addObject(bmap);
 
     engine.render();
 
