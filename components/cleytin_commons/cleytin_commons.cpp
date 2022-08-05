@@ -96,3 +96,33 @@ cleytin_load_rom_result_t cleytin_load_game_rom(const char *path) {
 void cleytin_delay(const uint64_t ms) {
     vTaskDelay(ms / portTICK_PERIOD_MS);
 }
+
+char *utf8ToLatin1(const char *utf8String) {
+    size_t size = 0;
+    while(utf8String[size] != '\0') {
+        size++;
+    }
+    char *latin1 = (char*) malloc(size+1);
+    size_t cursor = 0;
+    size_t cursorResult = 0;
+    while (cursor < size) {
+        char c = utf8String[cursor];
+        if(c > 0b11110000) { // Caractere com 4 bytes, não faz parte do latin 1
+            cursor += 4;
+        } else if(c > 0b11100000) { // Caractere com 3 bytes, não faz parte do latin 1
+            cursor += 3;
+        } else if(c > 0b11000000) { // Caractere com 2 bytes, convertendo para latin1
+            latin1[cursorResult++] = ((c << 6) | (utf8String[cursor+1] & 0b00111111));
+            cursor += 2;
+        } else if(c > 0b10000000) { // Caractere no meio da string utf-8, inválido
+            cursor++;
+        } else { // Caractere ascii, pode ser considerado um latin1 diretamente
+            latin1[cursorResult++] = c;
+            cursor++;
+        }
+    }
+    
+    latin1[cursorResult] = '\0';
+
+    return latin1;
+}

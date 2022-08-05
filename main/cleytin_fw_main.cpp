@@ -46,6 +46,12 @@ void app_main(void)
         printf("Indice: %d\n", (*lista)[i]);
     }
     
+    char *s = utf8ToLatin1("ÿ");
+    printf("%s: \n", s);
+    while(*s != '\0') {
+        printf("%c %d\n", *s, *s);
+        s++;
+    }
 
 /*
     uint16_t rot = 0;
