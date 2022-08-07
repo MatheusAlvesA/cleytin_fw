@@ -12,7 +12,7 @@ void app_main(void)
 {
     CleytinEngine engine;
     CEText *txt = new CEText();
-    txt->setText("XXXXX");
+    txt->setText("Teste 123");
     txt->setPos(100, 20);
     txt->setPriority(2);
 

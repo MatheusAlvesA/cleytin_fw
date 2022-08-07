@@ -8,13 +8,13 @@ uint8_t CE8x12Font::getCharWidth() {
 }
 
 uint8_t CE8x12Font::getCharHeight() {
-    return 12;
+    return CHAR_HEIGHT;
 }
 
 uint8_t *CE8x12Font::getRawPonter() {
     return (uint8_t *)buff;
 }
 
-unsigned int CE8x12Font::getPositionOf(char c) {
-    return 0; //TODO
+unsigned int CE8x12Font::getPositionOf(unsigned char c) {
+    return map_8x12_font[c % 256];
 }

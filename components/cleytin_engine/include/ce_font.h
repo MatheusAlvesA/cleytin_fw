@@ -1,7 +1,7 @@
 #ifndef CE_FONT_H
 #define CE_FONT_H
 
-#include <stdint.h>
+#include "cleytin_commons.h"
 
 class CEFont {
 public:
@@ -9,7 +9,8 @@ public:
     virtual uint8_t getCharWidth();
     virtual uint8_t getCharHeight();
     virtual uint8_t *getRawPonter();
-    virtual unsigned int getPositionOf(char c);
+    virtual char *parseString(const char *str);
+    virtual unsigned int getPositionOf(unsigned char c);
 };
 
 #endif

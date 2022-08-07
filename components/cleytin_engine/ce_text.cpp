@@ -19,7 +19,7 @@ void CEText::setCustomFont(CEFont *font) {
 }
 
 void CEText::setText(const char *buffer) {
-    this->text = utf8ToLatin1(buffer);
+    this->text = this->font->parseString(buffer);
     for (this->length = 0; *(buffer++) != '\0'; this->length++);
 }
 
