@@ -15,7 +15,7 @@ void CleytinLCDAPI::init()
 
 void CleytinLCDAPI::pulseClock() {
     gpio_set_level(LCD_CLOCK_PIN, 1);
-    for (size_t i = 0; i < 1000; i++);
+    for (size_t i = 0; i < 30; i++);
     gpio_set_level(LCD_CLOCK_PIN, 0);
 }
 
