@@ -12,8 +12,12 @@ void app_main(void)
 {
     CleytinEngine engine;
     CEText *txt = new CEText();
-    txt->setText("Teste 123");
-    txt->setPos(100, 20);
+    txt->setText(
+        /*" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno"*/
+        /*"pqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâ"*/
+        "ãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ \x01"
+    );
+    txt->setPos(0, 0);
     txt->setPriority(2);
 
     CEBitmap *bmap = new CEBitmap();
@@ -33,25 +37,18 @@ void app_main(void)
 
 
     engine.addObject(txt);
-    engine.addObject(rec2);
-    engine.addObject(bmap);
+    //engine.addObject(rec2);
+    //engine.addObject(bmap);
 
     engine.render();
-
+/*
     std::vector<size_t> *lista = engine.getCollisionsOn(0);
     printf("Encontrados: %d\n", lista->size());
     for (size_t i = 0; i < lista->size(); i++)
     {
         printf("Indice: %d\n", (*lista)[i]);
     }
-    
-    char *s = utf8ToLatin1("ÿ");
-    printf("%s: \n", s);
-    while(*s != '\0') {
-        printf("%c %d\n", *s, *s);
-        s++;
-    }
-
+*/
 /*
     uint16_t rot = 0;
     while(1) {
