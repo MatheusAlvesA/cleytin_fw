@@ -207,6 +207,20 @@ int CELine::calculateSideOfPoint(CEPoint* point) {
 /* CERenderWindow */
 
 CERenderWindow::CERenderWindow(const CEPoint &start, const CEPoint &end) {
+    this->setPoints(start, end);
+    this->maxX = LCD_WIDTH_PX;
+    this->maxY = LCD_HEIGHT_PX;
+}
+
+void CERenderWindow::setMaxX(uint8_t x) {
+    this->maxX = x;
+}
+
+void CERenderWindow::setMaxY(uint8_t y) {
+    this->maxY = y;
+}
+
+void CERenderWindow::setPoints(const CEPoint &start, const CEPoint &end) {
     this->topLeft = new CEPoint(start.x, start.y);
     this->bottomRight = new CEPoint(end.x, end.y);
     this->topRight = new CEPoint(end.x, start.y);
@@ -315,17 +329,17 @@ bool CERenderWindow::containsPoint(CEPoint *point) {
 }
 
 void CERenderWindow::expand(uint8_t size) {
-    if(size >= LCD_HEIGHT_PX || size >= LCD_WIDTH_PX) {
+    if(size >= this->maxY || size >= this->maxX) {
         return;
     }
     this->topLeft->x -= this->topLeft->x >= size ? size : 0;
     this->topLeft->y -= this->topLeft->y >= size ? size : 0;
-    this->topRight->x += this->topRight->x < (LCD_WIDTH_PX-size) ? size : 0;
+    this->topRight->x += this->topRight->x < (this->maxX-size) ? size : 0;
     this->topRight->y -= this->topRight->y >= size ? size : 0;
     this->bottomLeft->x -= this->bottomLeft->x >= size ? size : 0;
-    this->bottomLeft->y += this->bottomLeft->y < (LCD_HEIGHT_PX-size) ? size : 0;
-    this->bottomRight->x += this->bottomRight->x < (LCD_WIDTH_PX-size) ? size : 0;
-    this->bottomRight->y += this->bottomRight->y < (LCD_HEIGHT_PX-size) ? size : 0;
+    this->bottomLeft->y += this->bottomLeft->y < (this->maxY-size) ? size : 0;
+    this->bottomRight->x += this->bottomRight->x < (this->maxX-size) ? size : 0;
+    this->bottomRight->y += this->bottomRight->y < (this->maxY-size) ? size : 0;
 }
 
 std::vector<CEPoint*>* CERenderWindow::getAllPoints() {
@@ -349,6 +363,8 @@ CEGraphicObject::CEGraphicObject() {
     this->posX = 0;
     this->posY = 0;
     this->rotation = 0;
+    this->maxX = LCD_WIDTH_PX;
+    this->maxY = LCD_HEIGHT_PX;
 }
 
 void CEGraphicObject::setVisible(bool visible) {
@@ -377,6 +393,14 @@ void CEGraphicObject::setPosX(uint8_t posX) {
 
 void CEGraphicObject::setPosY(uint8_t posY) {
     this->posY = posY;
+}
+
+void CEGraphicObject::setMaxX(uint8_t maxX) {
+    this->maxX = maxX;
+}
+
+void CEGraphicObject::setMaxY(uint8_t maxY) {
+    this->maxY = maxY;
 }
 
 void CEGraphicObject::setRotation(uint16_t rotation) {
@@ -451,7 +475,7 @@ std::vector<CEPoint *> *CEGraphicObject::getAllRenderWindowPoints() {
 
 bool CEGraphicObject::rotatePixel(int &x, int &y, uint16_t rot) {
     if(rot == 0) {
-        if(x >= LCD_WIDTH_PX || y >= LCD_HEIGHT_PX) {
+        if(x >= this->maxX || y >= this->maxY) {
             return false;
         }
         return true;
@@ -469,8 +493,8 @@ bool CEGraphicObject::rotatePixel(int &x, int &y, uint16_t rot) {
     delete center;
 
     if(
-        newX < 0 || newX >= LCD_WIDTH_PX ||
-        newY < 0 || newY >= LCD_HEIGHT_PX
+        newX < 0 || newX >= this->maxX ||
+        newY < 0 || newY >= this->maxY
     ) {
         return false;
     }
@@ -518,4 +542,13 @@ bool CEGraphicObject::containsAnyPointsFrom(std::vector<CEPoint *> *points, cons
         }
     }
     return false;
+}
+
+CERenderWindow* CEGraphicObject::getDefaultRenderWindow() {
+    CEPoint *point = new CEPoint(this->posX, this->posY);
+    CERenderWindow *window = new CERenderWindow(*point, *point);
+    window->setMaxX(this->maxX);
+    window->setMaxY(this->maxY);
+    delete point;
+    return window;
 }

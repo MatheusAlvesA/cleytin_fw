@@ -12,11 +12,7 @@ void app_main(void)
 {
     CleytinEngine engine;
     CEText *txt = new CEText();
-    txt->setText(
-        /*" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno"*/
-        /*"pqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâ"*/
-        "ãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ \x01"
-    );
+    txt->setText("Matheus Alves");
     txt->setPos(0, 0);
     txt->setPriority(2);
 
@@ -37,8 +33,8 @@ void app_main(void)
 
 
     engine.addObject(txt);
-    //engine.addObject(rec2);
-    //engine.addObject(bmap);
+    engine.addObject(rec2);
+    engine.addObject(bmap);
 
     engine.render();
 /*

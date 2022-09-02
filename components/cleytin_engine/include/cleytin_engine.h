@@ -43,6 +43,10 @@ public:
     CEPoint *bottomLeft;
     CEPoint *bottomRight;
 
+    void setPoints(const CEPoint &start, const CEPoint &end);
+    void setMaxX(uint8_t x);
+    void setMaxY(uint8_t y);
+
     CEPoint* getCenterPoint();
     CELine* getTopLine();
     CELine* getBottomLine();
@@ -55,11 +59,16 @@ public:
     void expand(uint8_t size);
 
     void rotate(uint16_t degrees);
+
+private:
+    uint8_t maxX;
+    uint8_t maxY;
 };
 
 class CEGraphicObject {
 public:
     CEGraphicObject();
+    virtual CERenderWindow* getDefaultRenderWindow();
     virtual CERenderWindow* getRenderWindow() = 0;
     virtual bool renderToBuffer(uint8_t *buff);
     virtual bool renderToBuffer(uint8_t *buff, CERenderWindow *window) = 0;
@@ -74,6 +83,8 @@ public:
     virtual void setPriority(uint8_t priority);
     virtual void setPosX(uint8_t x);
     virtual void setPosY(uint8_t y);
+    virtual void setMaxX(uint8_t x);
+    virtual void setMaxY(uint8_t y);
     virtual void setPos(uint8_t x, uint8_t y);
     virtual void setRotation(uint16_t rotation);
     // Getters
@@ -94,6 +105,8 @@ protected:
     uint8_t priority;
     uint8_t posX;
     uint8_t posY;
+    uint8_t maxX;
+    uint8_t maxY;
     uint16_t rotation;
 
     bool setPixel(uint8_t *buff, int x, int y, bool state);

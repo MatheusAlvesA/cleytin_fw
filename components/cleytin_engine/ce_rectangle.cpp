@@ -23,9 +23,10 @@ uint8_t CERectangle::getHeight() {
 }
 
 CERenderWindow* CERectangle::getRenderWindow() {
+    CERenderWindow *window = this->getDefaultRenderWindow();
     CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
     CEPoint *end = new CEPoint((int) (this->posX + this->width), (int) (this->posY + this->height));
-    CERenderWindow *window = new CERenderWindow(*start, *end);
+    window->setPoints(*start, *end);
     delete start;
     delete end;
     return window;

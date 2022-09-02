@@ -28,8 +28,8 @@ void CEText::setWrap(bool wrap) {
 }
 
 uint8_t CEText::getWidth() {
-    if(this->posX + this->length * this->font->getCharWidth() >= LCD_WIDTH_PX) {
-        return LCD_WIDTH_PX  - this->posX;
+    if(this->posX + this->length * this->font->getCharWidth() >= this->maxX) {
+        return this->maxX  - this->posX;
     } else {
         return this->length * this->font->getCharWidth();
     }
@@ -41,7 +41,7 @@ uint8_t CEText::getHeight() {
     }
 
     size_t width = this->length * this->font->getCharWidth();
-    size_t availableWidth = LCD_WIDTH_PX - this->posX;
+    size_t availableWidth = this->maxX - this->posX;
     if(width > availableWidth) {
         return ((width / availableWidth) + 1) * this->font->getCharHeight();
     } else {
@@ -50,9 +50,10 @@ uint8_t CEText::getHeight() {
 }
 
 CERenderWindow* CEText::getRenderWindow() {
+    CERenderWindow *window = this->getDefaultRenderWindow();
     CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
     CEPoint *end = new CEPoint((int) (this->posX + this->getWidth()), (int) (this->posY + this->getHeight()));
-    CERenderWindow *window = new CERenderWindow(*start, *end);
+    window->setPoints(*start, *end);
     delete start;
     delete end;
     return window;
