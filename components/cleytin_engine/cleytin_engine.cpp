@@ -2,7 +2,7 @@
 
 static const char* TAG = "CE";
 
-bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b) {
+inline bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b) {
     return a->getPriority() < b->getPriority();
 }
 
@@ -366,6 +366,8 @@ CEGraphicObject::CEGraphicObject() {
     this->maxX = LCD_WIDTH_PX;
     this->maxY = LCD_HEIGHT_PX;
 }
+
+CEGraphicObject::~CEGraphicObject() {/* EMPTY */}
 
 void CEGraphicObject::setVisible(bool visible) {
     this->visible = visible;

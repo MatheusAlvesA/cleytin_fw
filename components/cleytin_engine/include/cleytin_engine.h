@@ -6,7 +6,7 @@
 #include "esp_system.h"
 #include "cleytin_lcd_api.h"
 
-#include <math.h> //TODO requerido apenas pelo circulo, refatorar para arquivo separado
+#include <math.h>
 
 #define PI 3.142857
 
@@ -68,6 +68,7 @@ private:
 class CEGraphicObject {
 public:
     CEGraphicObject();
+    virtual ~CEGraphicObject();
     virtual CERenderWindow* getDefaultRenderWindow();
     virtual CERenderWindow* getRenderWindow() = 0;
     virtual bool renderToBuffer(uint8_t *buff);
