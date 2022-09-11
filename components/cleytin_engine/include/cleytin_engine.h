@@ -52,6 +52,8 @@ public:
     CELine* getBottomLine();
     CELine* getLeftLine();
     CELine* getRightLine();
+    size_t getHeight();
+    size_t getWidth();
 
     std::vector<CEPoint*>* getAllPoints();
 
@@ -96,7 +98,11 @@ public:
     virtual uint8_t getPriority();
     virtual uint8_t getPosX();
     virtual uint8_t getPosY();
+    virtual uint8_t getMaxX();
+    virtual uint8_t getMaxY();
     virtual uint16_t getRotation();
+    virtual size_t getRenderWindowHeight();
+    virtual size_t getRenderWindowWidth();
 
 protected:
     bool visible;
@@ -138,5 +144,8 @@ private:
     uint8_t *buff;
     std::vector <CEGraphicObject*> objects;
 };
+
+bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b);
+void delete_points_vector(std::vector<CEPoint *> *v);
 
 #endif

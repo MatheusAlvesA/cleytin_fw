@@ -13,13 +13,14 @@ void app_main(void)
 {
     CleytinEngine engine;
     CEText *txt = new CEText();
-    txt->setText("Matheus Alves");
+    txt->setText("Matheus");
     txt->setWrap(false);
     txt->setPos(10, 10);
     txt->setPriority(2);
 
     CEBitmap *bmap = new CEBitmap();
     uint8_t *buff = (uint8_t *) malloc(2);
+    bmap->setPriority(1);
     buff[0] = 0b11111001;
     buff[1] = 0b10011111;
     bmap->setPos(10, 30);
@@ -29,23 +30,27 @@ void app_main(void)
 
     CERectangle *rec2 = new CERectangle();
     rec2->setPos(0, 0);
-    rec2->setWidth(50);
-    rec2->setHeight(50);
-    rec2->setFilled(false);
-/*
+    rec2->setWidth(10);
+    rec2->setHeight(10);
+    rec2->setFilled(true);
+    rec2->setPriority(3);
+
     CEContainer *cont = new CEContainer();
+    cont->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
+    cont->setAlignY(CEAlign::SPACE_BETWEEN);
+    cont->setAlignX(CEAlign::CENTER);
     cont->setPos(10, 10);
-    cont->setWidth(50);
+    cont->setWidth(110);
     cont->setHeight(50);
     cont->addObject(txt);
     cont->addObject(rec2);
     cont->addObject(bmap);
     engine.addObject(cont);
-*/
+/*
     engine.addObject(txt);
     engine.addObject(rec2);
     engine.addObject(bmap);
-
+*/
     engine.render();
 /*
     std::vector<size_t> *lista = engine.getCollisionsOn(0);

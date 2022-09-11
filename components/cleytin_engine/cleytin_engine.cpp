@@ -2,7 +2,7 @@
 
 static const char* TAG = "CE";
 
-inline bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b) {
+bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b) {
     return a->getPriority() < b->getPriority();
 }
 
@@ -351,6 +351,40 @@ std::vector<CEPoint*>* CERenderWindow::getAllPoints() {
     return points;
 }
 
+size_t CERenderWindow::getHeight() {
+    std::vector<CEPoint*>* points = this->getAllPoints();
+    int min = points->at(0)->y;
+    int max = points->at(0)->y;
+    for (size_t i = 0; i < points->size(); i++)
+    {
+        if(points->at(i)->y < min) {
+            min = points->at(i)->y;
+        }
+        if(points->at(i)->y > max) {
+            max = points->at(i)->y;
+        }
+    }
+    delete_points_vector(points);
+    return (size_t)(max-min);
+}
+
+size_t CERenderWindow::getWidth() {
+    std::vector<CEPoint*>* points = this->getAllPoints();
+    int min = points->at(0)->x;
+    int max = points->at(0)->x;
+    for (size_t i = 0; i < points->size(); i++)
+    {
+        if(points->at(i)->x < min) {
+            min = points->at(i)->x;
+        }
+        if(points->at(i)->x > max) {
+            max = points->at(i)->x;
+        }
+    }
+    delete_points_vector(points);
+    return (size_t)(max-min);
+}
+
 
 /* CEGraphicObject */
 
@@ -405,6 +439,14 @@ void CEGraphicObject::setMaxY(uint8_t maxY) {
     this->maxY = maxY;
 }
 
+uint8_t CEGraphicObject::getMaxX() {
+    return this->maxX;
+}
+
+uint8_t CEGraphicObject::getMaxY() {
+    return this->maxY;
+}
+
 void CEGraphicObject::setRotation(uint16_t rotation) {
     this->rotation = rotation % 360;
 }
@@ -454,6 +496,22 @@ uint8_t CEGraphicObject::getPosY() {
 
 uint16_t CEGraphicObject::getRotation() {
     return this->rotation;
+}
+
+size_t CEGraphicObject::getRenderWindowHeight() {
+    CERenderWindow *w = this->getRenderWindow();
+    w->rotate(this->getRotation());
+    size_t size = w->getHeight();
+    delete w;
+    return size;
+}
+
+size_t CEGraphicObject::getRenderWindowWidth() {
+    CERenderWindow *w = this->getRenderWindow();
+    w->rotate(this->getRotation());
+    size_t size = w->getWidth();
+    delete w;
+    return size;
 }
 
 void CEGraphicObject::mirrorPixel(int &x) {
