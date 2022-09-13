@@ -73,6 +73,10 @@ size_t CleytinEngine::getObjectIndex(CEGraphicObject* obj) {
     return this->objects.size()+1;
 }
 
+void CleytinEngine::clear() {
+    this->objects.clear();
+}
+
 std::vector<size_t>* CleytinEngine::getObjectsAt(CEPoint *point) {
     std::vector<size_t> *r = new std::vector<size_t>();
     for (size_t i = 0; i < this->objects.size(); i++) {

@@ -129,6 +129,7 @@ public:
     unsigned int addObject(CEGraphicObject *obj);
     bool removeObject(CEGraphicObject *obj);
     bool removeObjectAt(size_t index);
+    void clear();
     std::vector<size_t>* getCollisionsOn(size_t index);
     CEGraphicObject* getObjectAt(size_t index);
     std::vector<size_t>* getObjectsAt(CEPoint *point);

@@ -8,5 +8,6 @@ idf_component_register(SRCS
                             "ce_8x12_font.cpp"
                             "ce_text.cpp"
                             "ce_container.cpp"
+                            "ce_menu_helper.cpp"
                     INCLUDE_DIRS "include"
                     REQUIRES cleytin_commons)

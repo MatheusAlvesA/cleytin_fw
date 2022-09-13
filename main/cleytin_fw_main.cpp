@@ -1,8 +1,5 @@
 #include "cleytin_engine.h"
-#include "ce_rectangle.h"
-#include "ce_bitmap.h"
-#include "ce_text.h"
-#include "ce_container.h"
+#include "ce_menu_helper.h"
 #include "cleytin_storage.h"
 
 #define MAX_ROM_LIST_SIZE 200
@@ -12,66 +9,27 @@ extern "C" {
 void app_main(void)
 {
     CleytinEngine engine;
-    CEText *txt = new CEText();
-    txt->setText("Matheus");
-    txt->setWrap(false);
-    txt->setPos(10, 10);
-    txt->setPriority(2);
 
-    CEBitmap *bmap = new CEBitmap();
-    uint8_t *buff = (uint8_t *) malloc(2);
-    bmap->setPriority(1);
-    buff[0] = 0b11111001;
-    buff[1] = 0b10011111;
-    bmap->setPos(10, 30);
-    bmap->setWidth(4);
-    bmap->setHeight(4);
-    bmap->setBuffer(buff);
+    CEMenuHelper *menu = new CEMenuHelper();
+    menu->addOption("Opção 01", 1);
+    menu->addOption("Opção 02", 2);
+    menu->addOption("Opção 03", 3);
+    menu->addOption("Opção 04", 4);
+    menu->addOption("Opção 05", 5);
+    menu->addOption("Opção 06", 6);
+    menu->addOption("Opção 07", 7);
+    menu->addOption("Opção 08", 8);
+    menu->addOption("Opção 09", 9);
+    menu->addOption("Opção 10", 10);
 
-    CERectangle *rec2 = new CERectangle();
-    rec2->setPos(0, 0);
-    rec2->setWidth(10);
-    rec2->setHeight(10);
-    rec2->setFilled(true);
-    rec2->setPriority(3);
+    engine.addObject(menu);
 
-    CEContainer *cont = new CEContainer();
-    cont->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
-    cont->setAlignY(CEAlign::SPACE_BETWEEN);
-    cont->setAlignX(CEAlign::CENTER);
-    cont->setPos(10, 10);
-    cont->setWidth(110);
-    cont->setHeight(50);
-    cont->addObject(txt);
-    cont->addObject(rec2);
-    cont->addObject(bmap);
-    engine.addObject(cont);
-/*
-    engine.addObject(txt);
-    engine.addObject(rec2);
-    engine.addObject(bmap);
-*/
-    engine.render();
-/*
-    std::vector<size_t> *lista = engine.getCollisionsOn(0);
-    printf("Encontrados: %d\n", lista->size());
-    for (size_t i = 0; i < lista->size(); i++)
-    {
-        printf("Indice: %d\n", (*lista)[i]);
-    }
-*/
-/*
-    uint16_t rot = 0;
     while(1) {
-        rec->setRotation(rot);
-        rot += 1;
-        if(rot >= 360) {
-            rot = 0;
-        }
         engine.render();
-        //cleytin_delay(2000);
+        cleytin_delay(1000);
+        menu->moveCursorDown();
     }
-*/
+
 /*
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
 
