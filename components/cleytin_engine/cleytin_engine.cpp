@@ -210,7 +210,11 @@ int CELine::calculateSideOfPoint(CEPoint* point) {
 
 /* CERenderWindow */
 
-CERenderWindow::CERenderWindow(const CEPoint &start, const CEPoint &end) {
+CERenderWindow::CERenderWindow(const CEPoint *start, const CEPoint *end) {
+    this->topLeft = NULL;
+    this->bottomRight = NULL;
+    this->topRight = NULL;
+    this->bottomLeft = NULL;
     this->setPoints(start, end);
     this->maxX = LCD_WIDTH_PX;
     this->maxY = LCD_HEIGHT_PX;
@@ -224,11 +228,26 @@ void CERenderWindow::setMaxY(uint8_t y) {
     this->maxY = y;
 }
 
-void CERenderWindow::setPoints(const CEPoint &start, const CEPoint &end) {
-    this->topLeft = new CEPoint(start.x, start.y);
-    this->bottomRight = new CEPoint(end.x, end.y);
-    this->topRight = new CEPoint(end.x, start.y);
-    this->bottomLeft = new CEPoint(start.x, end.y);
+void CERenderWindow::setPoints(const CEPoint *start, const CEPoint *end) {
+    if(this->topLeft) {
+        delete this->topLeft;    
+    }
+    this->topLeft = new CEPoint(start->x, start->y);
+
+    if(this->bottomRight) {
+        delete this->bottomRight;
+    }
+    this->bottomRight = new CEPoint(end->x, end->y);
+
+    if(this->topRight) {
+        delete this->topRight;
+    }
+    this->topRight = new CEPoint(end->x, start->y);
+
+    if(this->bottomLeft) {
+        delete this->bottomLeft;
+    }
+    this->bottomLeft = new CEPoint(start->x, end->y);
 }
 
 CERenderWindow::~CERenderWindow() {
@@ -610,7 +629,7 @@ bool CEGraphicObject::containsAnyPointsFrom(std::vector<CEPoint *> *points, cons
 
 CERenderWindow* CEGraphicObject::getDefaultRenderWindow() {
     CEPoint *point = new CEPoint(this->posX, this->posY);
-    CERenderWindow *window = new CERenderWindow(*point, *point);
+    CERenderWindow *window = new CERenderWindow(point, point);
     window->setMaxX(this->maxX);
     window->setMaxY(this->maxY);
     delete point;

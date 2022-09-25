@@ -36,14 +36,14 @@ public:
 
 class CERenderWindow {
 public:
-    CERenderWindow(const CEPoint &start, const CEPoint &end);
+    CERenderWindow(const CEPoint *start, const CEPoint *end);
     ~CERenderWindow();
     CEPoint *topLeft;
     CEPoint *topRight;
     CEPoint *bottomLeft;
     CEPoint *bottomRight;
 
-    void setPoints(const CEPoint &start, const CEPoint &end);
+    void setPoints(const CEPoint *start, const CEPoint *end);
     void setMaxX(uint8_t x);
     void setMaxY(uint8_t y);
 

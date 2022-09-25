@@ -17,7 +17,7 @@ CERenderWindow* CECircle::getRenderWindow() {
     CERenderWindow *window = this->getDefaultRenderWindow();
     CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
     CEPoint *end = new CEPoint((int) (this->posX + 2*this->radius), (int) (this->posY + 2*this->radius));
-    window->setPoints(*start, *end);
+    window->setPoints(start, end);
     delete start;
     delete end;
     return window;

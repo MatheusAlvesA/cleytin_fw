@@ -1,6 +1,7 @@
 #include "cleytin_engine.h"
 #include "ce_menu_helper.h"
 #include "cleytin_storage.h"
+#include "cleytin_controls.h"
 
 #define MAX_ROM_LIST_SIZE 200
 
@@ -8,9 +9,10 @@ extern "C" {
 
 void app_main(void)
 {
-    CleytinEngine engine;
+    CleytinEngine *engine = new CleytinEngine();
 
     CEMenuHelper *menu = new CEMenuHelper();
+    CleytinControls *controls = new CleytinControls();
     menu->addOption("Opção 01", 1);
     menu->addOption("Opção 02", 2);
     menu->addOption("Opção 03", 3);
@@ -22,14 +24,20 @@ void app_main(void)
     menu->addOption("Opção 09", 9);
     menu->addOption("Opção 10", 10);
 
-    engine.addObject(menu);
+    engine->addObject(menu);
 
     while(1) {
-        engine.render();
-        cleytin_delay(1000);
-        menu->moveCursorDown();
+        engine->render();
+        if(controls->getUp()) {
+            menu->moveCursorUp();
+        }
+        if(controls->getDown()) {
+            menu->moveCursorDown();
+        }
     }
-
+    delete controls;
+    delete menu;
+    delete engine;
 /*
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
 

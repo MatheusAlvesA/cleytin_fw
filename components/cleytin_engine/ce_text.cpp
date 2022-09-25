@@ -19,6 +19,7 @@ void CEText::setCustomFont(CEFont *font) {
 }
 
 void CEText::setText(const char *buffer) {
+    delete this->text;
     this->text = this->font->parseString(buffer);
     for (this->length = 0; *(buffer++) != '\0'; this->length++);
 }
@@ -53,7 +54,7 @@ CERenderWindow* CEText::getRenderWindow() {
     CERenderWindow *window = this->getDefaultRenderWindow();
     CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
     CEPoint *end = new CEPoint((int) (this->posX + this->getWidth()), (int) (this->posY + this->getHeight()));
-    window->setPoints(*start, *end);
+    window->setPoints(start, end);
     delete start;
     delete end;
     return window;

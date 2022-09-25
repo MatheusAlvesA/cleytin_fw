@@ -1,6 +1,7 @@
 idf_component_register(SRCS 
                             "cleytin_engine.cpp"
                             "cleytin_lcd_api.cpp"
+                            "cleytin_controls.cpp"
                             "ce_rectangle.cpp"
                             "ce_circle.cpp"
                             "ce_bitmap.cpp"

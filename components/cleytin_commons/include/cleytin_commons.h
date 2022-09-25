@@ -73,8 +73,6 @@ cleytin_load_rom_result_t cleytin_load_game_rom(const char *path);
  */
 void cleytin_delay(const uint64_t ms);
 
-}
-
 /**
  * @brief Converte uma string utf-8 para latin1
  * 
@@ -82,4 +80,6 @@ void cleytin_delay(const uint64_t ms);
  * @return char* 
  */
 char *utf8ToLatin1(const char *utf8String) ;
+}
+
 #endif
