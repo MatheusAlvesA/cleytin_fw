@@ -18,17 +18,18 @@
 class CleytinControls {
 public:
     CleytinControls();
-    bool getUp();
-    bool getRight();
-    bool getDown();
-    bool getLeft();
-    bool getStart();
-    bool getA();
-    bool getB();
-    bool getC();
+    bool getUp(bool debouncing = true);
+    bool getRight(bool debouncing = true);
+    bool getDown(bool debouncing = true);
+    bool getLeft(bool debouncing = true);
+    bool getStart(bool debouncing = true);
+    bool getA(bool debouncing = true);
+    bool getB(bool debouncing = true);
+    bool getC(bool debouncing = true);
 
 private:
     bool up;
+    bool readBtnState(gpio_num_t btn, bool debouncing);
 };
 
 #endif

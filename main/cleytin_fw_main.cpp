@@ -26,13 +26,42 @@ void app_main(void)
 
     engine->addObject(menu);
 
+    bool upState = false;
+    bool downState = false;
+    bool leftState = false;
+    bool rightState = false;
     while(1) {
-        engine->render();
-        if(controls->getUp()) {
-            menu->moveCursorUp();
+        //engine->render();
+        bool r = controls->getUp();
+        if(r && !upState) {
+            printf("UP\n");
+            upState = true;
+        } else if(!r) {
+            upState = false;
         }
-        if(controls->getDown()) {
-            menu->moveCursorDown();
+
+        r = controls->getDown();
+        if(r && !downState) {
+            printf("DOWN\n");
+            downState = true;
+        } else if(!r) {
+            downState = false;
+        }
+
+        r = controls->getLeft();
+        if(r && !leftState) {
+            printf("LEFT\n");
+            leftState = true;
+        } else if(!r) {
+            leftState = false;
+        }
+
+        r = controls->getRight();
+        if(r && !rightState) {
+            printf("RIGHT\n");
+            rightState = true;
+        } else if(!r) {
+            rightState = false;
         }
     }
     delete controls;
