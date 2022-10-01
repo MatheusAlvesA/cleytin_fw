@@ -182,6 +182,7 @@ bool CEMenuHelper::renderOptionsToBuffer(uint8_t *buff, CERenderWindow *window) 
         CEText *txt = new CEText();
         txt->setText(this->options->at(i).label);
         txt->setPriority(i);
+        txt->setWrap(false);
         if(i == this->selected) {
             txt->setNegative(true);
         }

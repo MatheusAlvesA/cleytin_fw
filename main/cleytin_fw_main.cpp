@@ -1,7 +1,7 @@
 #include "cleytin_engine.h"
 #include "ce_menu_helper.h"
-#include "cleytin_storage.h"
 #include "cleytin_controls.h"
+#include "cleytin_sdcard.h"
 
 #define MAX_ROM_LIST_SIZE 200
 
@@ -9,36 +9,40 @@ extern "C" {
 
 void app_main(void)
 {
-/*
     CleytinEngine *engine = new CleytinEngine();
 
     CEMenuHelper *menu = new CEMenuHelper();
     CleytinControls *controls = new CleytinControls();
-    menu->addOption("Opção 01", 1);
-    menu->addOption("Opção 02", 2);
-    menu->addOption("Opção 03", 3);
-    menu->addOption("Opção 04", 4);
-    menu->addOption("Opção 05", 5);
-    menu->addOption("Opção 06", 6);
-    menu->addOption("Opção 07", 7);
-    menu->addOption("Opção 08", 8);
-    menu->addOption("Opção 09", 9);
-    menu->addOption("Opção 10", 10);
+    CleytinSdcard *sdcard = new CleytinSdcard();
+    
+    char **fileList = sdcard->list();
+    if(fileList == NULL) {
+        printf("Falha na leitura do cartão!\n");
+        return;
+    }
+
+    uint i = 0;
+    while(fileList[i] != NULL && i < 200) {
+        menu->addOption(fileList[i], i+1);
+        free(fileList[i]);
+        i++;
+    }
+    free(fileList);
 
     engine->addObject(menu);
-
-
     while(!menu->handleControls()) {
         engine->render();
         cleytin_delay(10);
     }
     uint idSelected = menu->getSelected();
+
     delete controls;
     delete menu;
     delete engine;
+    delete sdcard;
 
     printf("Opcao selecionada: %d\n", idSelected);
-*/
+/*
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
 
     if(romList == NULL) {
@@ -76,6 +80,7 @@ void app_main(void)
         cleytin_reboot_and_load_game_rom();
     }
     printf("Não foi encontrada nenhuma game rom!\n");
+    */
 }
 
 }
