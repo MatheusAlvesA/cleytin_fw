@@ -8,6 +8,7 @@
 #include "esp_spi_flash.h"
 #include "esp_partition.h"
 #include "esp_vfs_fat.h"
+#include "soc/rtc_wdt.h"
 
 #define CLEYTIN_GAME_ROM_ADDR 0x10000
 #define CLEYTIN_GAME_ROM_SIZE (3 * 1024 * 1024) // 3 Megabytes

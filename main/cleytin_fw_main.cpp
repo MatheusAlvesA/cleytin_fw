@@ -30,6 +30,10 @@ void app_main(void)
     bool downState = false;
     bool leftState = false;
     bool rightState = false;
+    bool aState = false;
+    bool bState = false;
+    bool cState = false;
+    bool startState = false;
     while(1) {
         //engine->render();
         bool r = controls->getUp();
@@ -63,6 +67,40 @@ void app_main(void)
         } else if(!r) {
             rightState = false;
         }
+
+        r = controls->getA();
+        if(r && !aState) {
+            printf("A\n");
+            aState = true;
+        } else if(!r) {
+            aState = false;
+        }
+
+        r = controls->getB();
+        if(r && !bState) {
+            printf("B\n");
+            bState = true;
+        } else if(!r) {
+            bState = false;
+        }
+
+        r = controls->getC();
+        if(r && !cState) {
+            printf("C\n");
+            cState = true;
+        } else if(!r) {
+            cState = false;
+        }
+
+        r = controls->getStart();
+        if(r && !startState) {
+            printf("START\n");
+            startState = true;
+        } else if(!r) {
+            startState = false;
+        }
+
+        cleytin_delay(10);
     }
     delete controls;
     delete menu;

@@ -16,7 +16,7 @@ void cleytin_reboot_and_load_game_rom(void)
 esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_int_type_t intr) {
     gpio_reset_pin(pin);
     gpio_config_t pinConf = {
-        .pin_bit_mask = 1UL << pin,
+        .pin_bit_mask = 1ULL << pin,
         .mode = (mode == CLEYTIN_GPIO_MODE_INPUT || mode == CLEYTIN_GPIO_MODE_INPUT_PULLUP || mode == CLEYTIN_GPIO_MODE_INPUT_PULLDOWN) ? GPIO_MODE_INPUT : GPIO_MODE_OUTPUT,
         .pull_up_en = (mode == CLEYTIN_GPIO_MODE_INPUT_PULLUP || mode == CLEYTIN_GPIO_MODE_OUTPUT_PULLUP) ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE,
         .pull_down_en = (mode == CLEYTIN_GPIO_MODE_INPUT_PULLDOWN || mode == CLEYTIN_GPIO_MODE_OUTPUT_PULLDOWN) ? GPIO_PULLDOWN_ENABLE : GPIO_PULLDOWN_DISABLE,
@@ -94,6 +94,7 @@ cleytin_load_rom_result_t cleytin_load_game_rom(const char *path) {
 }
 
 void cleytin_delay(const uint64_t ms) {
+    rtc_wdt_feed();
     vTaskDelay(ms / portTICK_PERIOD_MS);
 }
 
