@@ -5,6 +5,7 @@
 #include "ce_container.h"
 #include "ce_text.h"
 #include "ce_bitmap.h"
+#include "cleytin_controls.h"
 
 #define FONT_WIDTH 8
 #define FONT_HEIGHT 12
@@ -22,7 +23,7 @@ public:
     void setHeight(uint8_t h);
     uint8_t getWidth();
     uint8_t getHeight();
-    uint getPreselected();
+    uint getSelected();
 
     void setRotation(uint16_t rotation);
     void setMirrored(bool mirrored);
@@ -33,16 +34,24 @@ public:
 
     void moveCursorDown();
     void moveCursorUp();
+    bool handleControls();
+    bool startPressed();
 
     CERenderWindow* getRenderWindow();
     bool renderToBuffer(uint8_t *buff, CERenderWindow *window);
 
 protected:
+    CleytinControls *ctrl;
     uint8_t width;
     uint8_t height;
     std::vector <CEMenuOption> *options;
     size_t selected;
     size_t itemsOffset;
+    bool selectionMade;
+    bool btnAState;
+    bool btnStartState;
+    bool btnUpState;
+    bool btnDownState;
 
     bool renderOptionsToBuffer(uint8_t *buff, CERenderWindow *window);
     bool renderMenuInfoToBuffer(uint8_t *buff, CERenderWindow *window);

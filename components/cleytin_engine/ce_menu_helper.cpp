@@ -7,6 +7,12 @@ CEMenuHelper::CEMenuHelper() {
    this->selected = 0;
    this->itemsOffset = 0;
    this->options = new std::vector <CEMenuOption>();
+   this->ctrl = new CleytinControls();
+   this->selectionMade = false;
+   this->btnAState = false;
+   this->btnStartState = false;
+   this->btnUpState = false;
+   this->btnDownState = false;
 }
 
 CEMenuHelper::~CEMenuHelper() {
@@ -14,6 +20,7 @@ CEMenuHelper::~CEMenuHelper() {
         delete this->options->at(i).label;
     }
     delete this->options;
+    delete this->ctrl;
 }
 
 void CEMenuHelper::clearOptions() {
@@ -65,11 +72,50 @@ uint8_t CEMenuHelper::getHeight() {
     return this->height;
 }
 
-uint CEMenuHelper::getPreselected() {
+uint CEMenuHelper::getSelected() {
     if(this->options->size() <= 0) {
         return 0;
     }
     return this->options->at(this->selected).id;
+}
+
+bool CEMenuHelper::handleControls() {
+    if(this->selectionMade) {
+        return true;
+    }
+
+    bool r = this->ctrl->getA();
+    if(r) {
+        this->selectionMade = true;
+        return true;
+    }
+
+    r = this->ctrl->getUp();
+    if(r && !this->btnUpState) {
+        this->moveCursorUp();
+        this->btnUpState = true;
+        return false;
+    } else if(!r) {
+        this->btnUpState = false;
+    }
+
+    r = this->ctrl->getDown();
+    if(r && !this->btnDownState) {
+        this->moveCursorDown();
+        this->btnDownState = true;
+        return false;
+    } else if(!r) {
+        this->btnDownState = false;
+    }
+
+    if(this->ctrl->getStart()) {
+        this->btnStartState = true;
+    }
+    return false;
+}
+
+bool CEMenuHelper::startPressed() {
+    return this->btnStartState;
 }
 
 void CEMenuHelper::moveCursorDown() {
@@ -158,7 +204,7 @@ bool CEMenuHelper::renderMenuInfoToBuffer(uint8_t *buff, CERenderWindow *window)
 
     if(this->selected >= maxItems) {
         CEBitmap *bmp = new CEBitmap();
-        uint8_t buffStack[] = {0x0, 0x10, 0x38, 0x7C, 0x7C, 0x38, 0x38, 0x38, 0x0, 0x0, 0x0, 0x0};
+        const uint8_t buffStack[] = {0x0, 0x10, 0x38, 0x7C, 0x7C, 0x38, 0x38, 0x38, 0x0, 0x0, 0x0, 0x0};
         uint8_t *buff = (uint8_t *) malloc(8*12);
         for (size_t i = 0; i < 12; i++) {
             *(buff+i) = buffStack[i];
@@ -178,7 +224,7 @@ bool CEMenuHelper::renderMenuInfoToBuffer(uint8_t *buff, CERenderWindow *window)
 
     if((this->itemsOffset + maxItems) < this->options->size()) {
         CEBitmap *bmp = new CEBitmap();
-        uint8_t buffStack[] = {0x0, 0x0, 0x0, 0x0, 0x38, 0x38, 0x38, 0x7C, 0x7C, 0x38, 0x10, 0x0};
+        const uint8_t buffStack[] = {0x0, 0x0, 0x0, 0x0, 0x38, 0x38, 0x38, 0x7C, 0x7C, 0x38, 0x10, 0x0};
         uint8_t *buff = (uint8_t *) malloc(8*12);
         for (size_t i = 0; i < 12; i++) {
             *(buff+i) = buffStack[i];

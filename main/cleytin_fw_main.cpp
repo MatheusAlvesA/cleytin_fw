@@ -9,6 +9,7 @@ extern "C" {
 
 void app_main(void)
 {
+/*
     CleytinEngine *engine = new CleytinEngine();
 
     CEMenuHelper *menu = new CEMenuHelper();
@@ -26,86 +27,18 @@ void app_main(void)
 
     engine->addObject(menu);
 
-    bool upState = false;
-    bool downState = false;
-    bool leftState = false;
-    bool rightState = false;
-    bool aState = false;
-    bool bState = false;
-    bool cState = false;
-    bool startState = false;
-    while(1) {
-        //engine->render();
-        bool r = controls->getUp();
-        if(r && !upState) {
-            printf("UP\n");
-            upState = true;
-        } else if(!r) {
-            upState = false;
-        }
 
-        r = controls->getDown();
-        if(r && !downState) {
-            printf("DOWN\n");
-            downState = true;
-        } else if(!r) {
-            downState = false;
-        }
-
-        r = controls->getLeft();
-        if(r && !leftState) {
-            printf("LEFT\n");
-            leftState = true;
-        } else if(!r) {
-            leftState = false;
-        }
-
-        r = controls->getRight();
-        if(r && !rightState) {
-            printf("RIGHT\n");
-            rightState = true;
-        } else if(!r) {
-            rightState = false;
-        }
-
-        r = controls->getA();
-        if(r && !aState) {
-            printf("A\n");
-            aState = true;
-        } else if(!r) {
-            aState = false;
-        }
-
-        r = controls->getB();
-        if(r && !bState) {
-            printf("B\n");
-            bState = true;
-        } else if(!r) {
-            bState = false;
-        }
-
-        r = controls->getC();
-        if(r && !cState) {
-            printf("C\n");
-            cState = true;
-        } else if(!r) {
-            cState = false;
-        }
-
-        r = controls->getStart();
-        if(r && !startState) {
-            printf("START\n");
-            startState = true;
-        } else if(!r) {
-            startState = false;
-        }
-
+    while(!menu->handleControls()) {
+        engine->render();
         cleytin_delay(10);
     }
+    uint idSelected = menu->getSelected();
     delete controls;
     delete menu;
     delete engine;
-/*
+
+    printf("Opcao selecionada: %d\n", idSelected);
+*/
     char **romList = list_valid_game_roms(MAX_ROM_LIST_SIZE);
 
     if(romList == NULL) {
@@ -143,7 +76,6 @@ void app_main(void)
         cleytin_reboot_and_load_game_rom();
     }
     printf("Não foi encontrada nenhuma game rom!\n");
-*/
 }
 
 }
