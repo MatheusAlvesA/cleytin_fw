@@ -23,6 +23,7 @@ void app_main(void)
 
     uint i = 0;
     while(fileList[i] != NULL && i < 200) {
+        printf("%s\n", fileList[i]);
         menu->addOption(fileList[i], i+1);
         free(fileList[i]);
         i++;

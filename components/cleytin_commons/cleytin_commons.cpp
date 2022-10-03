@@ -40,7 +40,8 @@ sdmmc_card_t* cleytin_mount_fs() {
     sdmmc_host_t host = SDMMC_HOST_DEFAULT();
     sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
 
-    slot_config.width = 1; // Modo de 1bit
+    slot_config.width = 4; // Modo de 4bits
+    host.max_freq_khz = SDMMC_FREQ_HIGHSPEED;
     slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
     ESP_LOGI(LOG_TAG, "Montando sistema de arquivos");
