@@ -127,9 +127,9 @@ public:
     ~CleytinEngine();
 
     unsigned int addObject(CEGraphicObject *obj);
-    bool removeObject(CEGraphicObject *obj);
-    bool removeObjectAt(size_t index);
-    void clear();
+    bool removeObject(CEGraphicObject *obj, bool freeMemory = false);
+    bool removeObjectAt(size_t index, bool freeMemory = false);
+    void clear(bool freeMemory = false);
     std::vector<size_t>* getCollisionsOn(size_t index);
     CEGraphicObject* getObjectAt(size_t index);
     std::vector<size_t>* getObjectsAt(CEPoint *point);
@@ -138,7 +138,7 @@ public:
     void renderToBuffer();
     uint8_t* getBuffer();
     void sendBufferToLCD(uint8_t *buff);
-    void render();
+    uint64_t render();
 
 private:
     CleytinLCDAPI api;

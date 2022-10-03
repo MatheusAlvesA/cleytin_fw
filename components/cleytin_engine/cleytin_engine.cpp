@@ -1,7 +1,5 @@
 #include "cleytin_engine.h"
 
-static const char* TAG = "CE";
-
 bool compareObjectPriority(CEGraphicObject *a, CEGraphicObject *b) {
     return a->getPriority() < b->getPriority();
 }
@@ -38,7 +36,7 @@ unsigned int CleytinEngine::addObject(CEGraphicObject *obj) {
     return (unsigned int) this->objects.size();
 }
 
-bool CleytinEngine::removeObject(CEGraphicObject *obj) {
+bool CleytinEngine::removeObject(CEGraphicObject *obj, bool freeMemory) {
     size_t index = this->objects.size();
     for (size_t i = 0; i < this->objects.size(); i++) {
         if(this->objects[i] == obj) {
@@ -47,12 +45,16 @@ bool CleytinEngine::removeObject(CEGraphicObject *obj) {
         }
     }
 
-    return this->removeObjectAt(index);
+    return this->removeObjectAt(index, freeMemory);
 }
 
-bool CleytinEngine::removeObjectAt(size_t index) {
+bool CleytinEngine::removeObjectAt(size_t index, bool freeMemory) {
     if(index >= this->objects.size()) {
         return false;
+    }
+
+    if(freeMemory) {
+        delete this->objects[index];
     }
 
     while(index < this->objects.size()-1) {
@@ -73,7 +75,14 @@ size_t CleytinEngine::getObjectIndex(CEGraphicObject* obj) {
     return this->objects.size()+1;
 }
 
-void CleytinEngine::clear() {
+void CleytinEngine::clear(bool freeMemory) {
+    if(freeMemory) {
+        for (size_t i = 0; i < this->objects.size(); i++)
+        {
+            delete this->objects[i];
+        }
+        
+    }
     this->objects.clear();
 }
 
@@ -139,16 +148,12 @@ void CleytinEngine::sendBufferToLCD(uint8_t *buff) {
     this->api.renderBuffer(buff);
 }
 
-void CleytinEngine::render() {
+uint64_t CleytinEngine::render() {
     uint64_t start = esp_timer_get_time();
     this->renderToBuffer();
     uint64_t end = esp_timer_get_time();
-    ESP_LOGI(TAG, "%lld microsegundos passados no render\n", end-start);
-
-    start = esp_timer_get_time();
     this->sendBufferToLCD(this->buff);
-    end = esp_timer_get_time();
-    ESP_LOGI(TAG, "%lld microsegundos passados no envio\n", end-start);
+    return end-start;
 }
 
 uint8_t* CleytinEngine::getBuffer() {

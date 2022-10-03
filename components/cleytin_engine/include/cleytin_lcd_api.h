@@ -9,6 +9,7 @@
 
 #define LCD_CMD_CLS 0x01
 #define LCD_CMD_ON 0x0C
+#define LCD_CMD_BASIC_SET    0x30
 #define LCD_CMD_EXTENDED_SET 0x34
 #define LCD_CMD_GRAPH_MODE 0x36
 
@@ -22,6 +23,7 @@ public:
 
 private:
     spi_device_handle_t spi;
+    bool dataMode;
     void prepareCommandLCD();
     void prepareDataLCD();
     void pulseClock();

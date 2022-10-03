@@ -5,17 +5,21 @@ void CleytinLCDAPI::init()
     cleytin_set_gpio_pin(LCD_CLOCK_PIN, CLEYTIN_GPIO_MODE_OUTPUT, GPIO_INTR_DISABLE);
     cleytin_set_gpio_pin(LCD_DATA_PIN, CLEYTIN_GPIO_MODE_OUTPUT, GPIO_INTR_DISABLE);
 
+    this->dataMode = false;
+    this->sendByteToLCD(LCD_CMD_BASIC_SET, true);
+    this->sendByteToLCD(LCD_CMD_BASIC_SET, true);
     this->sendByteToLCD(LCD_CMD_CLS, true);
     cleytin_delay(2);
     this->sendByteToLCD(LCD_CMD_ON, true);
     this->sendByteToLCD(LCD_CMD_EXTENDED_SET, true);
+    cleytin_delay(10);
     this->sendByteToLCD(LCD_CMD_GRAPH_MODE, true);
     gpio_set_level(LCD_CLOCK_PIN, 0);
 }
 
 void CleytinLCDAPI::pulseClock() {
     gpio_set_level(LCD_CLOCK_PIN, 1);
-    for (size_t i = 0; i < 500; i++);
+    esp_rom_delay_us(1);
     gpio_set_level(LCD_CLOCK_PIN, 0);
 }
 
@@ -29,9 +33,14 @@ void CleytinLCDAPI::prepareCommandLCD() {
     for(int8_t i = 0; i < 3; i++) {
         this->pulseClock();
     }
+    this->dataMode = false;
 }
 
 void CleytinLCDAPI::prepareDataLCD() {
+    if(this->dataMode) {
+        return;
+    }
+
     gpio_set_level(LCD_DATA_PIN, 1);
     for(int8_t i = 0; i < 5; i++) {
         this->pulseClock();
@@ -45,6 +54,7 @@ void CleytinLCDAPI::prepareDataLCD() {
 
     gpio_set_level(LCD_DATA_PIN, 0);
     this->pulseClock();
+    this->dataMode = true;
 }
 
 void CleytinLCDAPI::sendByteToLCD(uint8_t byte, bool isCommand) {
