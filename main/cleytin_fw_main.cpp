@@ -2,53 +2,51 @@
 #include "ce_menu_helper.h"
 #include "ce_container.h"
 #include "ce_text.h"
+#include "fwfun_sdcard.h"
 #include "cleytin_controls.h"
-#include "cleytin_sdcard.h"
-
-#define MAX_ROM_LIST_SIZE 200
 
 extern "C" {
 
 void show_intro(CleytinEngine *engine);
+void handle_option(CleytinEngine *engine, CEMenuHelper *menu);
 
 void app_main(void)
 {
     CleytinEngine *engine = new CleytinEngine();
+    CleytinControls::init();
 
     show_intro(engine);
-
     CEMenuHelper *menu = new CEMenuHelper();
-    CleytinControls *controls = new CleytinControls();
-    CleytinSdcard *sdcard = new CleytinSdcard();
-    
-    char **fileList = sdcard->list();
-    if(fileList == NULL) {
-        printf("Falha na leitura do cartão!\n");
-        return;
+
+    menu->addOption("Micro SDCard", 1);
+
+    while(1) {
+        handle_option(engine, menu);
+        cleytin_delay(100);
     }
 
-    uint i = 0;
-    while(fileList[i] != NULL && i < 200) {
-        printf("%s\n", fileList[i]);
-        menu->addOption(fileList[i], i+1);
-        free(fileList[i]);
-        i++;
-    }
-    free(fileList);
+    delete menu;
+    delete engine;
+}
 
+void handle_option(CleytinEngine *engine, CEMenuHelper *menu) {
     engine->addObject(menu);
+    engine->render();
     while(!menu->handleControls()) {
         engine->render();
         cleytin_delay(10);
     }
-    uint idSelected = menu->getSelected();
-
-    delete controls;
-    delete menu;
-    delete engine;
-    delete sdcard;
-
-    printf("Opcao selecionada: %d\n", idSelected);
+    engine->clear();
+    engine->render();
+    switch (menu->getSelected()) {
+        case 1:
+            FWFUNSdcard *fun = new FWFUNSdcard();
+            fun->run(engine);
+            delete fun;
+            break;
+    }
+    engine->clear();
+    menu->reset();
 }
 
 void show_intro(CleytinEngine *engine) {
@@ -66,8 +64,6 @@ void show_intro(CleytinEngine *engine) {
     engine->clear(true);
     engine->addObject(cont);
 
-    text->setText("       ");
-    engine->render();
     cleytin_delay(200);
     text->setText("C      ");
     engine->render();

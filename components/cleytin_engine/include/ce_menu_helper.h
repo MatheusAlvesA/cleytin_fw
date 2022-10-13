@@ -36,6 +36,7 @@ public:
     void moveCursorUp();
     bool handleControls();
     bool startPressed();
+    void reset();
 
     CERenderWindow* getRenderWindow();
     bool renderToBuffer(uint8_t *buff, CERenderWindow *window);
@@ -48,10 +49,7 @@ protected:
     size_t selected;
     size_t itemsOffset;
     bool selectionMade;
-    bool btnAState;
     bool btnStartState;
-    bool btnUpState;
-    bool btnDownState;
 
     bool renderOptionsToBuffer(uint8_t *buff, CERenderWindow *window);
     bool renderMenuInfoToBuffer(uint8_t *buff, CERenderWindow *window);

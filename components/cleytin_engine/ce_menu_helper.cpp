@@ -9,11 +9,16 @@ CEMenuHelper::CEMenuHelper() {
    this->options = new std::vector <CEMenuOption>();
    this->ctrl = new CleytinControls();
    this->selectionMade = false;
-   this->btnAState = false;
    this->btnStartState = false;
-   this->btnUpState = false;
-   this->btnDownState = false;
 }
+
+void CEMenuHelper::reset() {
+   this->selected = 0;
+   this->itemsOffset = 0;
+   this->selectionMade = false;
+   this->btnStartState = false;
+}
+
 
 CEMenuHelper::~CEMenuHelper() {
     for (size_t i = 0; i < this->options->size(); i++) {
@@ -84,34 +89,30 @@ bool CEMenuHelper::handleControls() {
         return true;
     }
 
-    bool r = this->ctrl->getA();
-    if(r) {
-        this->selectionMade = true;
-        return true;
-    }
+    gpio_num_t clicked = this->ctrl->waitClick();
 
-    r = this->ctrl->getUp();
-    if(r && !this->btnUpState) {
-        this->moveCursorUp();
-        this->btnUpState = true;
-        return false;
-    } else if(!r) {
-        this->btnUpState = false;
-    }
+    switch (clicked) {
+        case CLEYTIN_BTN_DOWN:
+            this->moveCursorDown();
+            return false;
+            break;
+        case CLEYTIN_BTN_UP:
+            this->moveCursorUp();
+            return false;
+            break;
+        case CLEYTIN_BTN_A:
+            this->selectionMade = true;
+            return true;
+            break;
+        case CLEYTIN_BTN_START:
+            this->btnStartState = true;
+            return false;
+            break;
 
-    r = this->ctrl->getDown();
-    if(r && !this->btnDownState) {
-        this->moveCursorDown();
-        this->btnDownState = true;
-        return false;
-    } else if(!r) {
-        this->btnDownState = false;
+        default:
+            return false;
+            break;
     }
-
-    if(this->ctrl->getStart()) {
-        this->btnStartState = true;
-    }
-    return false;
 }
 
 bool CEMenuHelper::startPressed() {
