@@ -78,7 +78,7 @@ uint8_t CEMenuHelper::getHeight() {
 }
 
 uint CEMenuHelper::getSelected() {
-    if(this->options->size() <= 0) {
+    if(this->options->size() <= 0 || !this->selectionMade) {
         return 0;
     }
     return this->options->at(this->selected).id;

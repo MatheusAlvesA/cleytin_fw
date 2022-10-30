@@ -3,12 +3,13 @@
 #include "ce_container.h"
 #include "ce_text.h"
 #include "fwfun_sdcard.h"
+#include "fwfun_startgame.h"
 #include "cleytin_controls.h"
 
 extern "C" {
 
 void show_intro(CleytinEngine *engine);
-void handle_option(CleytinEngine *engine, CEMenuHelper *menu);
+void handle_options(CleytinEngine *engine, CEMenuHelper *menu);
 
 void app_main(void)
 {
@@ -18,10 +19,11 @@ void app_main(void)
     show_intro(engine);
     CEMenuHelper *menu = new CEMenuHelper();
 
-    menu->addOption("Micro SDCard", 1);
+    menu->addOption("Inicia Jogo", 1);
+    menu->addOption("Micro SDCard", 2);
 
     while(1) {
-        handle_option(engine, menu);
+        handle_options(engine, menu);
         cleytin_delay(100);
     }
 
@@ -29,7 +31,7 @@ void app_main(void)
     delete engine;
 }
 
-void handle_option(CleytinEngine *engine, CEMenuHelper *menu) {
+void handle_options(CleytinEngine *engine, CEMenuHelper *menu) {
     engine->addObject(menu);
     engine->render();
     while(!menu->handleControls()) {
@@ -39,10 +41,17 @@ void handle_option(CleytinEngine *engine, CEMenuHelper *menu) {
     engine->clear();
     engine->render();
     switch (menu->getSelected()) {
-        case 1:
-            FWFUNSdcard *fun = new FWFUNSdcard();
-            fun->run(engine);
-            delete fun;
+        case 1: {
+            FWFUNStartGame *fun1 = new FWFUNStartGame();
+            fun1->run(engine);
+            delete fun1;
+        }
+            break;
+        case 2: {
+            FWFUNSdcard *fun2 = new FWFUNSdcard();
+            fun2->run(engine);
+            delete fun2;
+        }
             break;
     }
     engine->clear();

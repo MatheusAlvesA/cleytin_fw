@@ -1,10 +1,10 @@
 #include "cleytin_commons.h"
 
-volatile uint8_t cleytin_game_rom_load_progress = 100;
+volatile uint8_t cleytin_game_rom_load_progress = 0;
 
 static const char *LOG_TAG = "cleytin";
 
-void cleytin_reboot_and_load_game_rom(void)
+void cleytin_reboot_and_start_game_rom(void)
 {
     const esp_partition_t* espPart = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_ANY, "cleytin_flags");
     uint32_t buff[1] = {0xFFFFFFFF};
@@ -57,6 +57,20 @@ sdmmc_card_t* cleytin_mount_fs() {
     }
     ESP_LOGI(LOG_TAG, "Sistema de arquivos montado");
     return card;
+}
+
+char *cleytin_get_root_filesystem(size_t bufferExtraSpace) {
+    char *root = (char *)malloc(9 + bufferExtraSpace);
+    root[0] = '/';
+    root[1] = 's';
+    root[2] = 'd';
+    root[3] = 'c';
+    root[4] = 'a';
+    root[5] = 'r';
+    root[6] = 'd';
+    root[7] = '/';
+    root[8] = '\0';
+    return root;
 }
 
 cleytin_load_rom_result_t cleytin_load_game_rom(const char *path) {

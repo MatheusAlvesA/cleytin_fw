@@ -10,6 +10,10 @@
 class FWFUNSdcard {
 public:
     void run(CleytinEngine *engine);
+
+private:
+    void loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *path);
+    void deleteFileList(char **list);
 };
 
 #endif

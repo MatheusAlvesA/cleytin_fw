@@ -40,7 +40,7 @@ extern "C" {
  * Essa função não retorna
  * 
  */
-void cleytin_reboot_and_load_game_rom(void);
+void cleytin_reboot_and_start_game_rom(void);
 
 /**
  * @brief Configura um dos pinos do ESP32
@@ -58,6 +58,13 @@ esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_in
  * @return sdmmc_card_t* 
  */
 sdmmc_card_t* cleytin_mount_fs();
+
+/**
+ * @brief Retorna o caminho para a raiz do sistema de arquivos
+ * 
+ * @return char* A string com o caminho para a raiz do sistema de arquivos
+ */
+char *cleytin_get_root_filesystem(size_t bufferExtraSpace = 0);
 
 /**
  * @brief Carrega a game rom contina no caminho passado na flash do ESP32

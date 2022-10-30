@@ -62,8 +62,12 @@ char *CleytinSdcard::removeExtension(char *src) {
 bool CleytinSdcard::isRegularFile(const char *path)
 {
     struct stat path_stat;
-    stat(path, &path_stat);
-    return S_ISREG(path_stat.st_mode);
+    char *fullPath = cleytin_get_root_filesystem(strlen(path));
+    strcat(fullPath, path);
+    stat(fullPath, &path_stat);
+    bool r = S_ISREG(path_stat.st_mode);
+    free(fullPath);
+    return r;
 }
 
 void load_file(void *path) {
