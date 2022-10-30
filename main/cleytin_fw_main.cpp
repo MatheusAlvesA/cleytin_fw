@@ -19,7 +19,7 @@ void app_main(void)
     show_intro(engine);
     CEMenuHelper *menu = new CEMenuHelper();
 
-    menu->addOption("Inicia Jogo", 1);
+    menu->addOption("Iniciar Jogo", 1);
     menu->addOption("Micro SDCard", 2);
 
     while(1) {

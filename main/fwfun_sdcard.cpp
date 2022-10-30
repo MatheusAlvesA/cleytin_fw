@@ -46,12 +46,41 @@ void FWFUNSdcard::run(CleytinEngine *engine) {
 
 void FWFUNSdcard::loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *path) {
     engine->clear();
+
+    CERectangle *barra = new CERectangle();
+    barra->setPos(4, 30);
+    barra->setHeight(4);
+    barra->setWidth(120);
+    barra->setFilled(false);
+
+    CERectangle *progresso = new CERectangle();
+    progresso->setPos(4, 30);
+    progresso->setHeight(4);
+    progresso->setWidth(0);
+    progresso->setFilled(true);
+
+    CEText *label = new CEText();
+    label->setPos(12, 15);
+    label->setText("Carregando...");
+
+    engine->addObject(barra);
+    engine->addObject(label);
+    engine->addObject(progresso);
+
     sdcard->loadFileToFlash(path);
-    printf("%u%%\n", sdcard->getLoadProgress());
+    engine->render();
     while(sdcard->getLoadProgress() < 100) {
-        printf("%u%%\n", sdcard->getLoadProgress());
+        progresso->setWidth((uint8_t) ((float)120 * ((float)sdcard->getLoadProgress() / (float)100)));
+        engine->render();
     }
-    printf("%u%%\n", sdcard->getLoadProgress());
+    progresso->setWidth(120);
+    engine->render();
+    cleytin_delay(200);
+    engine->clear();
+
+    delete barra;
+    delete label;
+    delete progresso;
 }
 
 void FWFUNSdcard::deleteFileList(char **list) {

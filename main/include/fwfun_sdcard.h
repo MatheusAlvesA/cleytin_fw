@@ -4,6 +4,8 @@
 #include "cleytin_engine.h"
 #include "ce_menu_helper.h"
 #include "cleytin_sdcard.h"
+#include "ce_rectangle.h"
+#include "ce_text.h"
 
 #define MAX_ROM_LIST_SIZE 200
 
