@@ -16,6 +16,7 @@ public:
 private:
     void loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *path);
     void deleteFileList(char **list);
+    void showErrorScreen(CleytinEngine *engine);
 };
 
 #endif

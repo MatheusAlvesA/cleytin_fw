@@ -6,7 +6,10 @@ void FWFUNSdcard::run(CleytinEngine *engine) {
     
     char **fileList = sdcard->list();
     if(fileList == NULL) {
-        printf("Falha na leitura do cartão!\n");
+        this->showErrorScreen(engine);
+        cleytin_delay(2000);
+        delete menu;
+        delete sdcard;
         return;
     }
 
@@ -67,7 +70,15 @@ void FWFUNSdcard::loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *p
     engine->addObject(label);
     engine->addObject(progresso);
 
-    sdcard->loadFileToFlash(path);
+    if(!sdcard->loadFileToFlash(path)) {
+        this->showErrorScreen(engine);
+        delete barra;
+        delete label;
+        delete progresso;
+        cleytin_unmount_fs();
+        cleytin_delay(2000);
+        return;
+    }
     engine->render();
     while(sdcard->getLoadProgress() < 100) {
         progresso->setWidth((uint8_t) ((float)120 * ((float)sdcard->getLoadProgress() / (float)100)));
@@ -90,4 +101,14 @@ void FWFUNSdcard::deleteFileList(char **list) {
         i++;
     }
     free(list);
+}
+
+void FWFUNSdcard::showErrorScreen(CleytinEngine *engine) {
+    engine->clear();
+    CEText *errorLabel = new CEText();
+    errorLabel->setPos(8, 15);
+    errorLabel->setText("Erro no SDCard");
+    engine->addObject(errorLabel);
+    engine->render();
+    engine->clear(true);
 }

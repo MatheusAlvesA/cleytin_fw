@@ -85,6 +85,10 @@ bool CleytinSdcard::loadFileToFlash(char *path) {
         return false;
     }
 
+    if(!this->isRegularFile(path)) {
+        return false;
+    }
+
     xTaskCreate(load_file, "LOAD_FILE_TO_FLASH", 10*1024, path, 1, NULL);
     return true;
 }
