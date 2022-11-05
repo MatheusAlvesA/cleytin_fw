@@ -31,6 +31,7 @@ typedef enum {
 } cleytin_load_rom_result_t;
 
 extern volatile uint8_t cleytin_game_rom_load_progress;
+extern sdmmc_card_t *cleytin_sd_card;
 
 extern "C" {
 
@@ -58,6 +59,13 @@ esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_in
  * @return sdmmc_card_t* 
  */
 sdmmc_card_t* cleytin_mount_fs();
+
+/**
+ * @brief Desmonta o sistema de arquivos previamente criado
+ * 
+ * @return void
+ */
+void cleytin_unmount_fs();
 
 /**
  * @brief Retorna o caminho para a raiz do sistema de arquivos

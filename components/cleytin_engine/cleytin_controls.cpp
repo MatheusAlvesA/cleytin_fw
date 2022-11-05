@@ -87,10 +87,10 @@ gpio_num_t CleytinControls::waitClick() {
                 r = list[i];
             }
         }
-        cleytin_delay(1);
+        cleytin_delay(10);
     }
 
-    while(!this->readBtnState(r, true)) cleytin_delay(1);
+    while(!this->readBtnState(r, true)) cleytin_delay(10);
 
     return r;
 }

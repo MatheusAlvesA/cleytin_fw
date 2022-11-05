@@ -5,6 +5,7 @@
 #include "fwfun_sdcard.h"
 #include "fwfun_startgame.h"
 #include "fwfun_about.h"
+#include "fwfun_test.h"
 #include "cleytin_controls.h"
 
 extern "C" {
@@ -22,7 +23,8 @@ void app_main(void)
 
     menu->addOption("Iniciar Jogo", 1);
     menu->addOption("Micro SDCard", 2);
-    menu->addOption("Sobre", 3);
+    menu->addOption("Diagnóstico", 3);
+    menu->addOption("Sobre", 4);
 
     while(1) {
         handle_options(engine, menu);
@@ -56,6 +58,12 @@ void handle_options(CleytinEngine *engine, CEMenuHelper *menu) {
         }
             break;
         case 3: {
+            FWFUNTest *fun = new FWFUNTest();
+            fun->run(engine);
+            delete fun;
+        }
+            break;
+        case 4: {
             FWFUNAbout *fun = new FWFUNAbout();
             fun->run(engine);
             delete fun;

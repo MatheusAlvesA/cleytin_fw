@@ -13,6 +13,11 @@ char **CleytinSdcard::list(const char *path, uint maxResults) {
     DIR *d;
     struct dirent *entry;
     d = opendir(path);
+    if(d == NULL) {
+        cleytin_unmount_fs();
+        this->card = NULL;
+        return NULL;
+    }
     size_t i = 0;
     while ((entry = readdir(d)) != NULL && i < maxResults) {
         size_t cursor = 0;

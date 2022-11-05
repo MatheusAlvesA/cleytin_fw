@@ -1,6 +1,7 @@
 #include "cleytin_commons.h"
 
 volatile uint8_t cleytin_game_rom_load_progress = 0;
+sdmmc_card_t *cleytin_sd_card = NULL;
 
 static const char *LOG_TAG = "cleytin";
 
@@ -26,9 +27,8 @@ esp_err_t cleytin_set_gpio_pin(gpio_num_t pin, cleytin_gpio_mode_t mode, gpio_in
 }
 
 sdmmc_card_t* cleytin_mount_fs() {
-    static sdmmc_card_t *card = NULL;
-    if(card != NULL) {
-        return card;
+    if(cleytin_sd_card != NULL) {
+        return cleytin_sd_card;
     }
     cleytin_set_gpio_pin((gpio_num_t)2, CLEYTIN_GPIO_MODE_INPUT_PULLUP, GPIO_INTR_DISABLE);
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
@@ -45,7 +45,7 @@ sdmmc_card_t* cleytin_mount_fs() {
     slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
     ESP_LOGI(LOG_TAG, "Montando sistema de arquivos");
-    esp_err_t ret = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot_config, &mount_config, &card);
+    esp_err_t ret = esp_vfs_fat_sdmmc_mount("/sdcard", &host, &slot_config, &mount_config, &cleytin_sd_card);
 
     if (ret != ESP_OK) {
         if (ret == ESP_FAIL) {
@@ -56,7 +56,14 @@ sdmmc_card_t* cleytin_mount_fs() {
         return NULL;
     }
     ESP_LOGI(LOG_TAG, "Sistema de arquivos montado");
-    return card;
+    return cleytin_sd_card;
+}
+
+void cleytin_unmount_fs() {
+    if(cleytin_sd_card != NULL) {
+        esp_vfs_fat_sdmmc_unmount();
+        cleytin_sd_card = NULL;
+    }
 }
 
 char *cleytin_get_root_filesystem(size_t bufferExtraSpace) {

@@ -89,5 +89,5 @@ void FWFUNSdcard::deleteFileList(char **list) {
         free(list[i]);
         i++;
     }
-    free(list[i]);
+    free(list);
 }
