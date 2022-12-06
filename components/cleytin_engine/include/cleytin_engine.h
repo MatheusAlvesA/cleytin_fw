@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include "esp_system.h"
-#include "cleytin_lcd_api.h"
+#include "ce_canvas_tftlcd_320x240.h"
 
 #include <math.h>
 
@@ -44,8 +44,8 @@ public:
     CEPoint *bottomRight;
 
     void setPoints(const CEPoint *start, const CEPoint *end);
-    void setMaxX(uint8_t x);
-    void setMaxY(uint8_t y);
+    void setMaxX(unsigned int x);
+    void setMaxY(unsigned int y);
 
     CEPoint* getCenterPoint();
     CELine* getTopLine();
@@ -58,13 +58,13 @@ public:
     std::vector<CEPoint*>* getAllPoints();
 
     bool containsPoint(CEPoint *point);
-    void expand(uint8_t size);
+    void expand(unsigned int size);
 
     void rotate(uint16_t degrees);
 
 private:
-    uint8_t maxX;
-    uint8_t maxY;
+    unsigned int maxX;
+    unsigned int maxY;
 };
 
 class CEGraphicObject {
@@ -73,33 +73,35 @@ public:
     virtual ~CEGraphicObject();
     virtual CERenderWindow* getDefaultRenderWindow();
     virtual CERenderWindow* getRenderWindow() = 0;
-    virtual bool renderToBuffer(uint8_t *buff);
-    virtual bool renderToBuffer(uint8_t *buff, CERenderWindow *window) = 0;
-    virtual bool containsPoint(CEPoint *point, uint8_t expand = 0);
-    virtual bool containsAnyPointsFrom(std::vector<CEPoint *> *points, const uint8_t expand = 0);
+    virtual bool renderToCanvas(CECanvas *canvas);
+    virtual bool renderToCanvas(CECanvas *canvas, CERenderWindow *window) = 0;
+    virtual bool containsPoint(CEPoint *point, unsigned int expand = 0);
+    virtual bool containsAnyPointsFrom(std::vector<CEPoint *> *points, const unsigned int expand = 0);
     virtual std::vector<CEPoint *> *getAllRenderWindowPoints();
     // Setters
     virtual void setVisible(bool visible);
     virtual void setMirrored(bool mirrored);
     virtual void setNegative(bool negative);
     virtual void setColisionEnabled(bool enabled);
-    virtual void setPriority(uint8_t priority);
-    virtual void setPosX(uint8_t x);
-    virtual void setPosY(uint8_t y);
-    virtual void setMaxX(uint8_t x);
-    virtual void setMaxY(uint8_t y);
-    virtual void setPos(uint8_t x, uint8_t y);
+    virtual void setPriority(unsigned int priority);
+    virtual void setPosX(unsigned int x);
+    virtual void setPosY(unsigned int y);
+    virtual void setMaxX(unsigned int x);
+    virtual void setMaxY(unsigned int y);
+    virtual void setPos(unsigned int x, unsigned int y);
     virtual void setRotation(uint16_t rotation);
+    virtual void setBaseColor(const CEColor color);
     // Getters
     virtual bool getVisible();
     virtual bool getMirrored();
     virtual bool getNegative();
     virtual bool getColisionEnabled();
-    virtual uint8_t getPriority();
-    virtual uint8_t getPosX();
-    virtual uint8_t getPosY();
-    virtual uint8_t getMaxX();
-    virtual uint8_t getMaxY();
+    virtual unsigned int getPriority();
+    virtual unsigned int getPosX();
+    virtual unsigned int getPosY();
+    virtual unsigned int getMaxX();
+    virtual unsigned int getMaxY();
+    virtual CEColor getBaseColor();
     virtual uint16_t getRotation();
     virtual size_t getRenderWindowHeight();
     virtual size_t getRenderWindowWidth();
@@ -109,14 +111,15 @@ protected:
     bool colisionEnabled;
     bool mirrored;
     bool negative;
-    uint8_t priority;
-    uint8_t posX;
-    uint8_t posY;
-    uint8_t maxX;
-    uint8_t maxY;
+    unsigned int priority;
+    unsigned int posX;
+    unsigned int posY;
+    unsigned int maxX;
+    unsigned int maxY;
     uint16_t rotation;
+    CEColor baseColor;
 
-    bool setPixel(uint8_t *buff, int x, int y, bool state);
+    bool setPixel(CECanvas *canvas, int x, int y, CEColor color);
     bool rotatePixel(int &x, int &y, uint16_t rot);
     void mirrorPixel(int &x);
 };
@@ -135,14 +138,13 @@ public:
     std::vector<size_t>* getObjectsAt(CEPoint *point);
     size_t getObjectIndex(CEGraphicObject* obj);
     size_t getObjectsCount();
-    void renderToBuffer();
-    uint8_t* getBuffer();
-    void sendBufferToLCD(uint8_t *buff);
+    void renderToCanvas();
     uint64_t render();
+    uint64_t renderSync();
+    uint64_t waitRender();
 
 private:
-    CleytinLCDAPI api;
-    uint8_t *buff;
+    CECanvas *canvas;
     std::vector <CEGraphicObject*> objects;
 };
 

@@ -6,8 +6,8 @@
 class CEFont {
 public:
     virtual ~CEFont();
-    virtual uint8_t getCharWidth();
-    virtual uint8_t getCharHeight();
+    virtual size_t getCharWidth();
+    virtual size_t getCharHeight();
     virtual uint8_t *getRawPonter();
     virtual char *parseString(const char *str);
     virtual unsigned int getPositionOf(unsigned char c);

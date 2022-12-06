@@ -461,8 +461,8 @@ class CE8x12Font : public CEFont {
 public:
     CE8x12Font();
     ~CE8x12Font();
-    uint8_t getCharWidth();
-    uint8_t getCharHeight();
+    size_t getCharWidth();
+    size_t getCharHeight();
     uint8_t *getRawPonter();
     unsigned int getPositionOf(unsigned char c);
 };

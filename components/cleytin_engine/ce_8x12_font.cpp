@@ -3,11 +3,11 @@
 CE8x12Font::CE8x12Font() {/* EMPTY */}
 CE8x12Font::~CE8x12Font() {/* EMPTY */}
 
-uint8_t CE8x12Font::getCharWidth() {
+size_t CE8x12Font::getCharWidth() {
     return 8;
 }
 
-uint8_t CE8x12Font::getCharHeight() {
+size_t CE8x12Font::getCharHeight() {
     return CHAR_HEIGHT;
 }
 

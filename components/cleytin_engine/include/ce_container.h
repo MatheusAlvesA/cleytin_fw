@@ -21,10 +21,10 @@ class CEContainer : public CEGraphicObject {
 public:
     CEContainer();
     ~CEContainer();
-    void setWidth(uint8_t w);
-    void setHeight(uint8_t h);
-    uint8_t getWidth();
-    uint8_t getHeight();
+    void setWidth(unsigned int w);
+    void setHeight(unsigned int h);
+    unsigned int getWidth();
+    unsigned int getHeight();
 
     unsigned int addObject(CEGraphicObject *obj);
     bool removeObject(CEGraphicObject *obj);
@@ -44,11 +44,11 @@ public:
     void setNegative(bool negative);
 
     CERenderWindow* getRenderWindow();
-    bool renderToBuffer(uint8_t *buff, CERenderWindow *window);
+    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
 
 protected:
-    uint8_t width;
-    uint8_t height;
+    unsigned int width;
+    unsigned int height;
     CEPositioningStyle positioningStyle;
     CEAlign alignX;
     CEAlign alignY;

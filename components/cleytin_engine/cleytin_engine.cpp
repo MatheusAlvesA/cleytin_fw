@@ -19,15 +19,14 @@ const static float sinLookUp[360] = {0.0000, 0.0175, 0.0349, 0.0524, 0.0698, 0.0
 
 CleytinEngine::CleytinEngine()
 {
-    this->buff = new uint8_t[(128 * 64) / 8]; // 128 por 64 bits de resolução
-    memset(this->buff, 0, (128 * 64) / 8);
-    this->api.init();
-    this->api.renderBuffer(this->buff);
+    this->canvas = new CECanvasTFTLCD320x240();
+    this->canvas->startRender();
+    this->canvas->waitRenderFinish();
 }
 
 CleytinEngine::~CleytinEngine()
 {
-    delete this->buff;
+    delete this->canvas;
 }
 
 unsigned int CleytinEngine::addObject(CEGraphicObject *obj) {
@@ -137,27 +136,32 @@ CEGraphicObject* CleytinEngine::getObjectAt(size_t index) {
     return this->objects[index];
 }
 
-void CleytinEngine::renderToBuffer() {
-    memset(this->buff, 0, (128 * 64) / 8);
+void CleytinEngine::renderToCanvas() {
+    this->canvas->clear();
     for (size_t i = 0; i < this->objects.size(); i++) {
-        this->objects[i]->renderToBuffer(this->buff);
+        this->objects[i]->renderToCanvas(this->canvas);
     }
-}
-
-void CleytinEngine::sendBufferToLCD(uint8_t *buff) {
-    this->api.renderBuffer(buff);
 }
 
 uint64_t CleytinEngine::render() {
     uint64_t start = esp_timer_get_time();
-    this->renderToBuffer();
+    this->renderToCanvas();
     uint64_t end = esp_timer_get_time();
-    this->sendBufferToLCD(this->buff);
+    this->canvas->startRender();
     return end-start;
 }
 
-uint8_t* CleytinEngine::getBuffer() {
-    return this->buff;
+uint64_t CleytinEngine::waitRender() {
+    uint64_t start = esp_timer_get_time();
+    this->canvas->waitRenderFinish();
+    uint64_t end = esp_timer_get_time();
+    return end-start;
+}
+
+uint64_t CleytinEngine::renderSync() {
+    uint64_t renderTime = this->render();
+    uint64_t sendTime = this->waitRender();
+    return renderTime + sendTime;
 }
 
 
@@ -221,15 +225,15 @@ CERenderWindow::CERenderWindow(const CEPoint *start, const CEPoint *end) {
     this->topRight = NULL;
     this->bottomLeft = NULL;
     this->setPoints(start, end);
-    this->maxX = LCD_WIDTH_PX;
-    this->maxY = LCD_HEIGHT_PX;
+    this->maxX = LCD_WIDTH_PIXELS;
+    this->maxY = LCD_HEIGHT_PIXELS;
 }
 
-void CERenderWindow::setMaxX(uint8_t x) {
+void CERenderWindow::setMaxX(unsigned int x) {
     this->maxX = x;
 }
 
-void CERenderWindow::setMaxY(uint8_t y) {
+void CERenderWindow::setMaxY(unsigned int y) {
     this->maxY = y;
 }
 
@@ -356,7 +360,7 @@ bool CERenderWindow::containsPoint(CEPoint *point) {
     return r;
 }
 
-void CERenderWindow::expand(uint8_t size) {
+void CERenderWindow::expand(unsigned int size) {
     if(size >= this->maxY || size >= this->maxX) {
         return;
     }
@@ -425,8 +429,9 @@ CEGraphicObject::CEGraphicObject() {
     this->posX = 0;
     this->posY = 0;
     this->rotation = 0;
-    this->maxX = LCD_WIDTH_PX;
-    this->maxY = LCD_HEIGHT_PX;
+    this->maxX = LCD_WIDTH_PIXELS;
+    this->maxY = LCD_HEIGHT_PIXELS;
+    this->baseColor = {0, 0, 0};
 }
 
 CEGraphicObject::~CEGraphicObject() {/* EMPTY */}
@@ -447,31 +452,31 @@ void CEGraphicObject::setColisionEnabled(bool enabled) {
     this->colisionEnabled = enabled;
 }
 
-void CEGraphicObject::setPriority(uint8_t priority) {
+void CEGraphicObject::setPriority(unsigned int priority) {
     this->priority = priority;
 }
 
-void CEGraphicObject::setPosX(uint8_t posX) {
+void CEGraphicObject::setPosX(unsigned int posX) {
     this->posX = posX;
 }
 
-void CEGraphicObject::setPosY(uint8_t posY) {
+void CEGraphicObject::setPosY(unsigned int posY) {
     this->posY = posY;
 }
 
-void CEGraphicObject::setMaxX(uint8_t maxX) {
+void CEGraphicObject::setMaxX(unsigned int maxX) {
     this->maxX = maxX;
 }
 
-void CEGraphicObject::setMaxY(uint8_t maxY) {
+void CEGraphicObject::setMaxY(unsigned int maxY) {
     this->maxY = maxY;
 }
 
-uint8_t CEGraphicObject::getMaxX() {
+unsigned int CEGraphicObject::getMaxX() {
     return this->maxX;
 }
 
-uint8_t CEGraphicObject::getMaxY() {
+unsigned int CEGraphicObject::getMaxY() {
     return this->maxY;
 }
 
@@ -479,17 +484,25 @@ void CEGraphicObject::setRotation(uint16_t rotation) {
     this->rotation = rotation % 360;
 }
 
-void CEGraphicObject::setPos(uint8_t x, uint8_t y) {
+void CEGraphicObject::setPos(unsigned int x, unsigned int y) {
     this->posX = x;
     this->posY = y;
 }
 
-bool CEGraphicObject::renderToBuffer(uint8_t *buff) {
+void CEGraphicObject::setBaseColor(const CEColor color) {
+    this->baseColor = color;
+}
+
+CEColor CEGraphicObject::getBaseColor() {
+    return this->baseColor;
+}
+
+bool CEGraphicObject::renderToCanvas(CECanvas *canvas) {
     if(!this->getVisible()) {
         return true;
     }
     CERenderWindow *w = this->getRenderWindow();
-    bool result = this->renderToBuffer(buff, w);
+    bool result = this->renderToCanvas(canvas, w);
     delete w;
     return result;
 }
@@ -510,15 +523,15 @@ bool CEGraphicObject::getColisionEnabled() {
     return this->colisionEnabled;
 }
 
-uint8_t CEGraphicObject::getPriority() {
+unsigned int CEGraphicObject::getPriority() {
     return this->priority;
 }
 
-uint8_t CEGraphicObject::getPosX() {
+unsigned int CEGraphicObject::getPosX() {
     return this->posX;
 }
 
-uint8_t CEGraphicObject::getPosY() {
+unsigned int CEGraphicObject::getPosY() {
     return this->posY;
 }
 
@@ -593,27 +606,29 @@ bool CEGraphicObject::rotatePixel(int &x, int &y, uint16_t rot) {
     return true;
 }
 
-bool CEGraphicObject::setPixel(uint8_t *buff, int x, int y, bool state) {
+bool CEGraphicObject::setPixel(CECanvas *canvas, int x, int y, CEColor color) {
     if(this->getMirrored()) {
         this->mirrorPixel(x);
     }
     if(!this->rotatePixel(x, y, this->getRotation())) {
         return false;
     }
-
-    unsigned int bitPos = x + (y * LCD_WIDTH_PX);
-    unsigned int bytePos = bitPos / 8;
-    unsigned int bitOffset = bitPos % 8;
-    if((state && !this->getNegative()) || (!state && this->getNegative())) {
-        buff[bytePos] |= 1 << (7 - bitOffset);
-    } else {
-        buff[bytePos] &= ~(1 << (7 - bitOffset));
+    if(x < 0 || y < 0) {
+        return false;
     }
+    unsigned int posX = (unsigned int) x;
+    unsigned int posY = (unsigned int) y;
+
+    if(this->getNegative()) {
+        color = -color;
+    }
+
+    canvas->setPixel(posX, posY, color);
 
     return true;
 }
 
-bool CEGraphicObject::containsPoint(CEPoint *point, uint8_t expand) {
+bool CEGraphicObject::containsPoint(CEPoint *point, unsigned int expand) {
     CERenderWindow *w = this->getRenderWindow();
     w->expand(expand);
     w->rotate(this->getRotation());
@@ -622,7 +637,7 @@ bool CEGraphicObject::containsPoint(CEPoint *point, uint8_t expand) {
     return r;
 }
 
-bool CEGraphicObject::containsAnyPointsFrom(std::vector<CEPoint *> *points, const uint8_t expand) {
+bool CEGraphicObject::containsAnyPointsFrom(std::vector<CEPoint *> *points, const unsigned int expand) {
     for (size_t i = 0; i < points->size(); i++)
     {
         if(this->containsPoint((*points)[i], expand)) {

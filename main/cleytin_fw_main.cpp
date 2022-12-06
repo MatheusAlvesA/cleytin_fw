@@ -76,8 +76,8 @@ void handle_options(CleytinEngine *engine, CEMenuHelper *menu) {
 
 void show_intro(CleytinEngine *engine) {
     CEContainer *cont = new CEContainer();
-    cont->setHeight(64);
-    cont->setWidth(128);
+    cont->setHeight(240);
+    cont->setWidth(320);
     cont->setPos(0, 0);
     cont->setPositioningStyle(FLEX_COLUMN);
     cont->setAlignX(CENTER);

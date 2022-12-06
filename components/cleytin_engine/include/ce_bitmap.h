@@ -7,19 +7,19 @@ class CEBitmap : public CEGraphicObject {
 public:
     CEBitmap();
     ~CEBitmap();
-    void setWidth(uint8_t w);
-    void setHeight(uint8_t h);
+    void setWidth(unsigned int w);
+    void setHeight(unsigned int h);
     void setBuffer(uint8_t *buffer);
-    uint8_t getWidth();
-    uint8_t getHeight();
+    unsigned int getWidth();
+    unsigned int getHeight();
     uint8_t *getBuffer();
 
     CERenderWindow* getRenderWindow();
-    bool renderToBuffer(uint8_t *buff, CERenderWindow *window);
+    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
 
 protected:
-    uint8_t width;
-    uint8_t height;
+    unsigned int width;
+    unsigned int height;
     uint8_t *buffer;
 };
 

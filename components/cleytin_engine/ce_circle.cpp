@@ -5,11 +5,11 @@ CECircle::CECircle() {
    this->filled = false;
 }
 
-void CECircle::setRadius(uint8_t r) {
+void CECircle::setRadius(unsigned int r) {
     this->radius = r;
 }
 
-uint8_t CECircle::getRadius() {
+unsigned int CECircle::getRadius() {
     return this->radius;
 }
 
@@ -39,7 +39,7 @@ uint16_t CECircle::getRotation() {
     return 0;
 }
 
-bool CECircle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CECircle::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     int startX = window->topLeft->x;
     int startY = window->topLeft->y;
     int endX = window->bottomRight->x;
@@ -59,10 +59,12 @@ bool CECircle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
             }
             if(
                 !this->setPixel(
-                    buff,
+                    canvas,
                     cursorX,
                     cursorY,
-                    this->filled || distanceToCenter == (this->getRadius() - 1)
+                    (this->filled || distanceToCenter == (this->getRadius() - 1))
+                        ? this->getBaseColor()
+                        : canvas->getBackgroundColor()
                 )
             ) {
                 allPixelRendered = false;

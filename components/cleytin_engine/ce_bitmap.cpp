@@ -10,19 +10,19 @@ CEBitmap::~CEBitmap() {
    delete this->buffer;
 }
 
-void CEBitmap::setWidth(uint8_t w) {
+void CEBitmap::setWidth(unsigned int w) {
     this->width = w;
 }
 
-void CEBitmap::setHeight(uint8_t h) {
+void CEBitmap::setHeight(unsigned int h) {
     this->height = h;
 }
 
-uint8_t CEBitmap::getWidth() {
+unsigned int CEBitmap::getWidth() {
     return this->width;
 }
 
-uint8_t CEBitmap::getHeight() {
+unsigned int CEBitmap::getHeight() {
     return this->height;
 }
 
@@ -44,18 +44,18 @@ uint8_t *CEBitmap::getBuffer() {
     return this->buffer;
 }
 
-bool CEBitmap::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     int startX = window->topLeft->x;
     int startY = window->topLeft->y;
     int endX = window->bottomRight->x;
     int endY = window->bottomRight->y;
 
-    int cursorY = startY;
-    int internalCursorY = 0;
+    unsigned int cursorY = startY;
+    unsigned int internalCursorY = 0;
     bool allPixelRendered = true;
     while(cursorY < endY) {
-        int cursorX = startX;
-        int internalCursorX = 0;
+        unsigned int cursorX = startX;
+        unsigned int internalCursorX = 0;
         while (cursorX < endX)
         {
             unsigned int bitPos = internalCursorX + (internalCursorY * this->getWidth());
@@ -63,10 +63,12 @@ bool CEBitmap::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
             unsigned int bitOffset = bitPos % 8;
             if(
                 !this->setPixel(
-                    buff,
+                    canvas,
                     cursorX,
                     cursorY,
-                    this->buffer[bytePos] & (1 << (7 - bitOffset))
+                    (this->buffer[bytePos] & (1 << (7 - bitOffset)))
+                        ? this->getBaseColor()
+                        : canvas->getBackgroundColor()
                 )
             ) {
                 allPixelRendered = false;

@@ -28,7 +28,7 @@ void CEText::setWrap(bool wrap) {
     this->wrap = wrap;
 }
 
-uint8_t CEText::getWidth() {
+unsigned int CEText::getWidth() {
     if(this->posX + this->length * this->font->getCharWidth() >= this->maxX) {
         return this->maxX  - this->posX;
     } else {
@@ -36,7 +36,7 @@ uint8_t CEText::getWidth() {
     }
 }
 
-uint8_t CEText::getHeight() {
+unsigned int CEText::getHeight() {
     if(!this->wrap) {
         return this->font->getCharHeight();
     }
@@ -60,10 +60,10 @@ CERenderWindow* CEText::getRenderWindow() {
     return window;
 }
 
-bool CEText::renderChar(uint8_t *buff, char c, uint8_t x, uint8_t y) {
+bool CEText::renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y) {
     uint8_t *mappedPointer = this->font->getRawPonter() + this->font->getPositionOf(c);
-    uint8_t charWidth = this->font->getCharWidth();
-    uint8_t charHeight = this->font->getCharHeight();
+    unsigned int charWidth = this->font->getCharWidth();
+    unsigned int charHeight = this->font->getCharHeight();
     bool r = true;
     for (size_t cursorY = 0; cursorY < charHeight; cursorY++)
     {
@@ -73,10 +73,12 @@ bool CEText::renderChar(uint8_t *buff, char c, uint8_t x, uint8_t y) {
             unsigned int bytePos = bitPos / 8;
             unsigned int bitOffset = bitPos % 8;
             if(!this->setPixel(
-                buff,
+                canvas,
                 x + cursorX,
                 y + cursorY,
-                mappedPointer[bytePos] & (1 << (7 - bitOffset))
+                (mappedPointer[bytePos] & (1 << (7 - bitOffset)))
+                    ? this->getBaseColor()
+                    : canvas->getBackgroundColor()
             )) {
                 r = false;
             }
@@ -85,13 +87,13 @@ bool CEText::renderChar(uint8_t *buff, char c, uint8_t x, uint8_t y) {
     return r;
 }
 
-bool CEText::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     CERenderWindow *w = this->getRenderWindow();
-    uint8_t startX = w->topLeft->x;
-    uint8_t cursorX = startX;
-    uint8_t cursorY = w->topLeft->y;
-    uint8_t maxX = w->bottomRight->x;
-    uint8_t maxY = w->bottomRight->y;
+    unsigned int startX = w->topLeft->x;
+    unsigned int cursorX = startX;
+    unsigned int cursorY = w->topLeft->y;
+    unsigned int maxX = w->bottomRight->x;
+    unsigned int maxY = w->bottomRight->y;
     delete w;
 
     size_t charWidth = (size_t) this->font->getCharWidth();
@@ -99,19 +101,19 @@ bool CEText::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
     bool allRendered = true;
     for (size_t i = 0; this->text[i] != '\0'; i++)
     {
-        if(!this->renderChar(buff, this->text[i], cursorX, cursorY)) {
+        if(!this->renderChar(canvas, this->text[i], cursorX, cursorY)) {
             allRendered = false;
         }
         size_t nextCharXPos = ((size_t) cursorX) + charWidth; // Determine a posição do próximo char na linha
 
         if(nextCharXPos + charWidth <= maxX) { // Ainda cabe todo o próximo caractere nessa linha
-            cursorX = (uint8_t) nextCharXPos; // Avance na linha
+            cursorX = nextCharXPos; // Avance na linha
             continue; // Prossiga para renderizar o próximo char
         }
         // Não cabe todo o próximo char nessa linha
         if(!this->wrap) { // Se precisa renderizar tudo em uma linha
             if(nextCharXPos <= maxX) { // Se cabe ao menos uma parte
-                cursorX = (uint8_t) nextCharXPos; // Avance na linha
+                cursorX = nextCharXPos; // Avance na linha
                 continue; // Prossiga para renderizar o próximo char
             }
             return false; // Não é mais possível renderizar nada na linha, terminando
@@ -121,7 +123,7 @@ bool CEText::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
         if(nextCharYPos > maxY) { // Se o início da próxima linha está fora do limite
             return false; // Termine o render
         }
-        cursorY = (uint8_t) nextCharYPos; // Vá para a próxima linha
+        cursorY = nextCharYPos; // Vá para a próxima linha
         cursorX = startX; // Comece do início da próxima linha
     }
 

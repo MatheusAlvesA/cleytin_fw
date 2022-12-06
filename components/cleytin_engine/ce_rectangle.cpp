@@ -6,19 +6,19 @@ CERectangle::CERectangle() {
    this->filled = false;
 }
 
-void CERectangle::setWidth(uint8_t w) {
+void CERectangle::setWidth(unsigned int w) {
     this->width = w;
 }
 
-void CERectangle::setHeight(uint8_t h) {
+void CERectangle::setHeight(unsigned int h) {
     this->height = h;
 }
 
-uint8_t CERectangle::getWidth() {
+unsigned int CERectangle::getWidth() {
     return this->width;
 }
 
-uint8_t CERectangle::getHeight() {
+unsigned int CERectangle::getHeight() {
     return this->height;
 }
 
@@ -40,24 +40,26 @@ bool CERectangle::getFilled() {
     return this->filled;
 }
 
-bool CERectangle::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CERectangle::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     int startX = window->topLeft->x;
     int startY = window->topLeft->y;
     int endX = window->bottomRight->x;
     int endY = window->bottomRight->y;
 
-    int cursorY = startY;
+    unsigned int cursorY = startY;
     bool allPixelRendered = true;
     while(cursorY < endY) {
-        int cursorX = startX;
+        unsigned int cursorX = startX;
         while (cursorX < endX)
         {
             if(
                 !this->setPixel(
-                    buff,
+                    canvas,
                     cursorX,
                     cursorY,
-                    this->filled || cursorX == startX || cursorX == (endX - 1) || cursorY == startY || cursorY == (endY - 1)
+                    (this->filled || cursorX == startX || cursorX == (endX - 1) || cursorY == startY || cursorY == (endY - 1))
+                        ? this->getBaseColor()
+                        : canvas->getBackgroundColor()
                 )
             ) {
                 allPixelRendered = false;

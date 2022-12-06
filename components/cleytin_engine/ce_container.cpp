@@ -76,19 +76,19 @@ size_t CEContainer::getObjectIndex(CEGraphicObject* obj) {
     return this->objects->size()+1;
 }
 
-void CEContainer::setWidth(uint8_t w) {
+void CEContainer::setWidth(unsigned int w) {
     this->width = w;
 }
 
-void CEContainer::setHeight(uint8_t h) {
+void CEContainer::setHeight(unsigned int h) {
     this->height = h;
 }
 
-uint8_t CEContainer::getWidth() {
+unsigned int CEContainer::getWidth() {
     return this->width;
 }
 
-uint8_t CEContainer::getHeight() {
+unsigned int CEContainer::getHeight() {
     return this->height;
 }
 
@@ -306,10 +306,10 @@ void CEContainer::positionObjectRow(CEGraphicObject *obj, CERenderWindow *w, siz
     }
 }
 
-bool CEContainer::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CEContainer::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     bool r = true;
-    uint8_t bkpX = 0;
-    uint8_t bkpY = 0;
+    unsigned int bkpX = 0;
+    unsigned int bkpY = 0;
     uint maxX = window->bottomRight->x;
     uint maxY = window->bottomRight->y;
     uint offsetX = window->topLeft->x;
@@ -323,7 +323,7 @@ bool CEContainer::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
         obj->setMaxX(maxX);
         obj->setMaxY(maxY);
         this->positionObject(obj, window, spaceXLeft, spaceYLeft, offsetX, offsetY);
-        if(!obj->renderToBuffer(buff)) {
+        if(!obj->renderToCanvas(canvas)) {
             r = false;
         }
         obj->setPos(bkpX, bkpY);

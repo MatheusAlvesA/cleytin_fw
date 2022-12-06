@@ -16,16 +16,16 @@ void FWFUNTest::run(CleytinEngine *engine) {
 
 bool FWFUNTest::testScreen(CleytinEngine *engine) {
     CERectangle *rect = new CERectangle();
-    rect->setHeight(LCD_HEIGHT_PX);
+    rect->setHeight(LCD_HEIGHT_PIXELS);
     rect->setFilled(true);
     rect->setPos(0, 0);
     engine->addObject(rect);
-    for (uint8_t i = 0; i <= LCD_WIDTH_PX; i++) {
+    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i++) {
         rect->setWidth(i);
         engine->render();
         cleytin_delay(5);
     }
-    for (uint8_t i = 0; i <= LCD_WIDTH_PX; i++) {
+    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i++) {
         rect->setPosX(i);
         engine->render();
         cleytin_delay(5);
@@ -75,8 +75,8 @@ void FWFUNTest::testButton(CleytinEngine *engine, const char *label, gpio_num_t 
     CleytinControls *ctrl = new CleytinControls();
     CEContainer *container = new CEContainer();
     container->setPos(0, 0);
-    container->setWidth(LCD_WIDTH_PX);
-    container->setHeight(LCD_HEIGHT_PX);
+    container->setWidth(LCD_WIDTH_PIXELS);
+    container->setHeight(LCD_HEIGHT_PIXELS);
     container->setPositioningStyle(CEPositioningStyle::FLEX_ROW);
     container->setAlignX(CEAlign::CENTER);
     container->setAlignY(CEAlign::CENTER);
@@ -98,8 +98,8 @@ void FWFUNTest::showResults(CleytinEngine *engine, bool screen, bool serial, boo
     CEContainer *container = new CEContainer();
 
     container->setPos(0, 0);
-    container->setWidth(LCD_WIDTH_PX);
-    container->setHeight(LCD_HEIGHT_PX);
+    container->setWidth(LCD_WIDTH_PIXELS);
+    container->setHeight(LCD_HEIGHT_PIXELS);
     container->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
     container->setAlignX(CEAlign::START);
     container->setAlignY(CEAlign::START);

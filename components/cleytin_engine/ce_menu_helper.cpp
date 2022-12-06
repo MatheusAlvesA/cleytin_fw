@@ -2,8 +2,8 @@
 
 
 CEMenuHelper::CEMenuHelper() {
-   this->width = LCD_WIDTH_PX;
-   this->height = LCD_HEIGHT_PX;
+   this->width = LCD_WIDTH_PIXELS;
+   this->height = LCD_HEIGHT_PIXELS;
    this->selected = 0;
    this->itemsOffset = 0;
    this->options = new std::vector <CEMenuOption>();
@@ -61,19 +61,19 @@ void CEMenuHelper::addOption(const char *label, uint id) {
     this->options->push_back({copyLabel, id});
 }
 
-void CEMenuHelper::setWidth(uint8_t w) {
+void CEMenuHelper::setWidth(unsigned int w) {
     this->width = w;
 }
 
-void CEMenuHelper::setHeight(uint8_t h) {
+void CEMenuHelper::setHeight(unsigned int h) {
     this->height = h;
 }
 
-uint8_t CEMenuHelper::getWidth() {
+unsigned int CEMenuHelper::getWidth() {
     return this->width;
 }
 
-uint8_t CEMenuHelper::getHeight() {
+unsigned int CEMenuHelper::getHeight() {
     return this->height;
 }
 
@@ -158,18 +158,18 @@ CERenderWindow* CEMenuHelper::getRenderWindow() {
     return window;
 }
 
-bool CEMenuHelper::renderToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CEMenuHelper::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     bool r = true;
-    if(!this->renderOptionsToBuffer(buff, window)) {
+    if(!this->renderOptionsToCanvas(canvas, window)) {
         r = false;
     }
-    if(!this->renderMenuInfoToBuffer(buff, window)) {
+    if(!this->renderMenuInfoToCanvas(canvas, window)) {
         r = false;
     }
     return r;
 }
 
-bool CEMenuHelper::renderOptionsToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CEMenuHelper::renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *window) {
     size_t maxItems = this->getHeight() / FONT_HEIGHT;
     CEContainer *c = new CEContainer();
     c->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
@@ -189,12 +189,12 @@ bool CEMenuHelper::renderOptionsToBuffer(uint8_t *buff, CERenderWindow *window) 
         }
         c->addObject(txt);
     }
-    bool r = ((CEGraphicObject *)c)->renderToBuffer(buff);
+    bool r = ((CEGraphicObject *)c)->renderToCanvas(canvas);
     delete c;
     return r;
 }
 
-bool CEMenuHelper::renderMenuInfoToBuffer(uint8_t *buff, CERenderWindow *window) {
+bool CEMenuHelper::renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *window) {
     size_t maxItems = this->getHeight() / FONT_HEIGHT;
     CEContainer *c = new CEContainer();
     c->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
@@ -244,7 +244,7 @@ bool CEMenuHelper::renderMenuInfoToBuffer(uint8_t *buff, CERenderWindow *window)
         c->addObject(placeholder);
     }
 
-    bool r = ((CEGraphicObject *)c)->renderToBuffer(buff);
+    bool r = ((CEGraphicObject *)c)->renderToCanvas(canvas);
     delete c;
     return r;
 }

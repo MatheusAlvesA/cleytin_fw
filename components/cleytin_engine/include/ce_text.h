@@ -11,11 +11,11 @@ public:
     void setText(const char *buffer);
     void setCustomFont(CEFont *font);
     void setWrap(bool wrap);
-    uint8_t getWidth();
-    uint8_t getHeight();
+    unsigned int getWidth();
+    unsigned int getHeight();
 
     CERenderWindow* getRenderWindow();
-    bool renderToBuffer(uint8_t *buff, CERenderWindow *window);
+    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
 
 protected:
     char *text;
@@ -23,7 +23,7 @@ protected:
     CEFont *font;
     bool wrap;
 
-    bool renderChar(uint8_t *buff, char c, uint8_t x, uint8_t y);
+    bool renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y);
 };
 
 #endif

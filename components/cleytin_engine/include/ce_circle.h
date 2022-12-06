@@ -6,19 +6,19 @@
 class CECircle : public CEGraphicObject {
 public:
     CECircle();
-    void setRadius(uint8_t r);
+    void setRadius(unsigned int r);
     void setFilled(bool fill);
     void setRotation(uint16_t rotation);
 
-    uint8_t getRadius();
+    unsigned int getRadius();
     bool getFilled();
     virtual uint16_t getRotation();
 
     CERenderWindow* getRenderWindow();
-    bool renderToBuffer(uint8_t *buff, CERenderWindow *window);
+    bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
 
 protected:
-    uint8_t radius;
+    unsigned int radius;
     bool filled;
 };
 #endif
