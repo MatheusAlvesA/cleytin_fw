@@ -76,14 +76,16 @@ void handle_options(CleytinEngine *engine, CEMenuHelper *menu) {
 
 void show_intro(CleytinEngine *engine) {
     CEContainer *cont = new CEContainer();
-    cont->setHeight(240);
-    cont->setWidth(320);
+    cont->setHeight(LCD_HEIGHT_PIXELS);
+    cont->setWidth(LCD_WIDTH_PIXELS);
     cont->setPos(0, 0);
     cont->setPositioningStyle(FLEX_COLUMN);
     cont->setAlignX(CENTER);
     cont->setAlignY(CENTER);
 
     CEText *text = new CEText();
+    text->setSizeMultiplier(4);
+    text->setBaseColor({0, 91, 200});
     cont->addObject(text);
 
     engine->clear(true);

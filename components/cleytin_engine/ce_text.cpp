@@ -6,6 +6,7 @@ CEText::CEText() {
     this->text[0] = '\0';
     this->length = 0;
     this->wrap = true;
+    this->sizeMultiplier = 1;
 }
 
 CEText::~CEText() {
@@ -29,25 +30,35 @@ void CEText::setWrap(bool wrap) {
 }
 
 unsigned int CEText::getWidth() {
-    if(this->posX + this->length * this->font->getCharWidth() >= this->maxX) {
-        return this->maxX  - this->posX;
+    size_t charWidth = this->font->getCharWidth() * this->getSizeMultiplier();
+    if(this->posX + this->length * charWidth >= this->maxX) {
+        return this->maxX - this->posX;
     } else {
-        return this->length * this->font->getCharWidth();
+        return this->length * charWidth;
     }
 }
 
 unsigned int CEText::getHeight() {
+    size_t charHeight = this->font->getCharHeight() * this->getSizeMultiplier();
     if(!this->wrap) {
-        return this->font->getCharHeight();
+        return charHeight;
     }
 
-    size_t width = this->length * this->font->getCharWidth();
+    size_t width = this->length * this->font->getCharWidth() * this->getSizeMultiplier();
     size_t availableWidth = this->maxX - this->posX;
     if(width > availableWidth) {
-        return ((width / availableWidth) + 1) * this->font->getCharHeight();
+        return ((width / availableWidth) + 1) * charHeight;
     } else {
-        return this->font->getCharHeight();
+        return charHeight;
     }
+}
+
+uint8_t CEText::getSizeMultiplier() {
+    return this->sizeMultiplier;
+}
+
+void CEText::setSizeMultiplier(uint8_t size) {
+    this->sizeMultiplier = size;
 }
 
 CERenderWindow* CEText::getRenderWindow() {
@@ -65,22 +76,24 @@ bool CEText::renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y
     unsigned int charWidth = this->font->getCharWidth();
     unsigned int charHeight = this->font->getCharHeight();
     bool r = true;
-    for (size_t cursorY = 0; cursorY < charHeight; cursorY++)
-    {
-        for (size_t cursorX = 0; cursorX < charWidth; cursorX++)
-        {
+    for (size_t cursorY = 0; cursorY < charHeight; cursorY++) {
+        for (size_t cursorX = 0; cursorX < charWidth; cursorX++) {
             unsigned int bitPos = cursorX + (cursorY * charWidth);
             unsigned int bytePos = bitPos / 8;
             unsigned int bitOffset = bitPos % 8;
-            if(!this->setPixel(
-                canvas,
-                x + cursorX,
-                y + cursorY,
-                (mappedPointer[bytePos] & (1 << (7 - bitOffset)))
-                    ? this->getBaseColor()
-                    : canvas->getBackgroundColor()
-            )) {
-                r = false;
+            for (size_t i = 0; i < this->getSizeMultiplier(); i++) {
+                for (size_t j = 0; j < this->getSizeMultiplier(); j++) {
+                    if(!this->setPixel(
+                        canvas,
+                        i + x + (cursorX * this->getSizeMultiplier()),
+                        j + y + (cursorY * this->getSizeMultiplier()),
+                        (mappedPointer[bytePos] & (1 << (7 - bitOffset)))
+                            ? this->getBaseColor()
+                            : canvas->getBackgroundColor()
+                    )) {
+                        r = false;
+                    }
+                }
             }
         }
     }
@@ -97,10 +110,11 @@ bool CEText::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
     delete w;
 
     size_t charWidth = (size_t) this->font->getCharWidth();
+    charWidth *= this->getSizeMultiplier();
     size_t charHeight = (size_t) this->font->getCharHeight();
+    charHeight *= this->getSizeMultiplier();
     bool allRendered = true;
-    for (size_t i = 0; this->text[i] != '\0'; i++)
-    {
+    for (size_t i = 0; this->text[i] != '\0'; i++) {
         if(!this->renderChar(canvas, this->text[i], cursorX, cursorY)) {
             allRendered = false;
         }

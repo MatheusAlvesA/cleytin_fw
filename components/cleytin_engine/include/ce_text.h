@@ -13,6 +13,8 @@ public:
     void setWrap(bool wrap);
     unsigned int getWidth();
     unsigned int getHeight();
+    uint8_t getSizeMultiplier();
+    void setSizeMultiplier(uint8_t size);
 
     CERenderWindow* getRenderWindow();
     bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
@@ -22,6 +24,7 @@ protected:
     size_t length;
     CEFont *font;
     bool wrap;
+    uint8_t sizeMultiplier;
 
     bool renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y);
 };
