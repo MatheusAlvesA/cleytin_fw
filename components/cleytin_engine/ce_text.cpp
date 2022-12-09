@@ -7,6 +7,8 @@ CEText::CEText() {
     this->length = 0;
     this->wrap = true;
     this->sizeMultiplier = 1;
+    this->bgColor = {0xFF, 0xFF, 0xFF};
+    this->bgColorSet = false;
 }
 
 CEText::~CEText() {
@@ -27,6 +29,15 @@ void CEText::setText(const char *buffer) {
 
 void CEText::setWrap(bool wrap) {
     this->wrap = wrap;
+}
+
+void CEText::setBGColor(CEColor color) {
+    this->bgColor = color;
+    this->bgColorSet = true;
+}
+
+CEColor CEText::getBGColor() {
+    return this->bgColor;
 }
 
 unsigned int CEText::getWidth() {
@@ -76,6 +87,7 @@ bool CEText::renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y
     unsigned int charWidth = this->font->getCharWidth();
     unsigned int charHeight = this->font->getCharHeight();
     bool r = true;
+    CEColor currentBGColor = this->bgColorSet ? this->getBGColor() : canvas->getBackgroundColor();
     for (size_t cursorY = 0; cursorY < charHeight; cursorY++) {
         for (size_t cursorX = 0; cursorX < charWidth; cursorX++) {
             unsigned int bitPos = cursorX + (cursorY * charWidth);
@@ -89,7 +101,7 @@ bool CEText::renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y
                         j + y + (cursorY * this->getSizeMultiplier()),
                         (mappedPointer[bytePos] & (1 << (7 - bitOffset)))
                             ? this->getBaseColor()
-                            : canvas->getBackgroundColor()
+                            : currentBGColor
                     )) {
                         r = false;
                     }

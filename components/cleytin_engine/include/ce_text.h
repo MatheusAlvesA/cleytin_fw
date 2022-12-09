@@ -15,6 +15,8 @@ public:
     unsigned int getHeight();
     uint8_t getSizeMultiplier();
     void setSizeMultiplier(uint8_t size);
+    void setBGColor(CEColor color);
+    CEColor getBGColor();
 
     CERenderWindow* getRenderWindow();
     bool renderToCanvas(CECanvas *canvas, CERenderWindow *window);
@@ -25,6 +27,8 @@ protected:
     CEFont *font;
     bool wrap;
     uint8_t sizeMultiplier;
+    CEColor bgColor;
+    bool bgColorSet;
 
     bool renderChar(CECanvas *canvas, char c, unsigned int x, unsigned int y);
 };

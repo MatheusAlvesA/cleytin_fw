@@ -4,6 +4,7 @@
 #include "cleytin_engine.h"
 #include "ce_container.h"
 #include "ce_text.h"
+#include "ce_rectangle.h"
 #include "ce_bitmap.h"
 #include "cleytin_controls.h"
 
@@ -28,6 +29,19 @@ public:
     void setRotation(uint16_t rotation);
     void setMirrored(bool mirrored);
     void setNegative(bool negative);
+  
+    void setHighlightBGColor(CEColor color);
+    void setHighlightTextColor(CEColor color);
+    void setTextColor(CEColor color);
+    CEColor getHighlightBGColor();
+    CEColor getHighlightTextColor();
+    CEColor getTextColor();
+
+    void setOptionsSizeMultiplier(uint8_t size);
+    uint8_t getOptionsSizeMultiplier();
+
+    void setTitle(const char *title);
+    const char *getTitle();
 
     void addOption(const char *label, uint id);
     void clearOptions();
@@ -50,9 +64,17 @@ protected:
     size_t itemsOffset;
     bool selectionMade;
     bool btnStartState;
+    CEColor highlightBGColor;
+    CEColor highlightTextColor;
+    CEColor textColor;
+    uint8_t optionsSizeMultiplier;
+    const char *title;
 
     bool renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *window);
     bool renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *window);
+    bool renderMenuTitleToCanvas(CECanvas *canvas, CERenderWindow *window);
+    unsigned int getOptionHeight();
+    size_t getMaxItemsOnCanvas(); 
 };
 
 #endif
