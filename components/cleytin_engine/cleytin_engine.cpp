@@ -145,6 +145,7 @@ void CleytinEngine::renderToCanvas() {
 
 uint64_t CleytinEngine::render() {
     uint64_t start = esp_timer_get_time();
+    this->canvas->waitRenderFinish(); // Finalize o render anterior caso não tenha
     this->renderToCanvas();
     uint64_t end = esp_timer_get_time();
     this->canvas->startRender();

@@ -28,14 +28,6 @@ void app_main(void)
     menu->addOption("Micro SDCard", 2);
     menu->addOption("Diagnóstico", 3);
     menu->addOption("Sobre", 4);
-    menu->addOption("Iniciar Jogo", 5);
-    menu->addOption("Micro SDCard", 6);
-    menu->addOption("Diagnóstico", 7);
-    menu->addOption("Sobre", 8);
-    menu->addOption("Iniciar Jogo", 9);
-    menu->addOption("Micro SDCard", 10);
-    menu->addOption("Diagnóstico", 11);
-    menu->addOption("Sobre", 12);
 
     while(1) {
         handle_options(engine, menu);
