@@ -13,6 +13,10 @@ void FWFUNSdcard::run(CleytinEngine *engine) {
         return;
     }
 
+    menu->setTitle("SD Card");
+    menu->setBaseColor(CLEYTIN_COLOR_PRIMARY);
+    menu->setHighlightBGColor(CLEYTIN_COLOR_PRIMARY);
+
     uint i = 0;
     while(fileList[i] != NULL && i < MAX_FILE_LIST_SIZE) {
         if(sdcard->isRegularFile(fileList[i])) {
@@ -51,20 +55,21 @@ void FWFUNSdcard::loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *p
     engine->clear();
 
     CERectangle *barra = new CERectangle();
-    barra->setPos(4, 30);
+    barra->setPos(10, 120);
     barra->setHeight(4);
-    barra->setWidth(120);
+    barra->setWidth(300);
     barra->setFilled(false);
 
     CERectangle *progresso = new CERectangle();
-    progresso->setPos(4, 30);
+    progresso->setPos(10, 120);
     progresso->setHeight(4);
     progresso->setWidth(0);
     progresso->setFilled(true);
 
     CEText *label = new CEText();
-    label->setPos(12, 15);
-    label->setText("Carregando...");
+    label->setPos(80, 90);
+    label->setSizeMultiplier(2);
+    label->setText("Carregando");
 
     engine->addObject(barra);
     engine->addObject(label);
@@ -81,10 +86,10 @@ void FWFUNSdcard::loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *p
     }
     engine->render();
     while(sdcard->getLoadProgress() < 100) {
-        progresso->setWidth((uint8_t) ((float)120 * ((float)sdcard->getLoadProgress() / (float)100)));
+        progresso->setWidth((unsigned int) ((float)300 * ((float)sdcard->getLoadProgress() / (float)100)));
         engine->render();
     }
-    progresso->setWidth(120);
+    progresso->setWidth(300);
     engine->render();
     cleytin_delay(200);
     engine->clear();
@@ -106,8 +111,10 @@ void FWFUNSdcard::deleteFileList(char **list) {
 void FWFUNSdcard::showErrorScreen(CleytinEngine *engine) {
     engine->clear();
     CEText *errorLabel = new CEText();
-    errorLabel->setPos(8, 15);
+    errorLabel->setPos(40, 100);
     errorLabel->setText("Erro no SDCard");
+    errorLabel->setSizeMultiplier(2);
+    errorLabel->setBaseColor(CLEYTIN_COLOR_ERROR);
     engine->addObject(errorLabel);
     engine->render();
     engine->clear(true);

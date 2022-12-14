@@ -20,8 +20,8 @@ void app_main(void)
 
     show_intro(engine);
     CEMenuHelper *menu = new CEMenuHelper();
-    menu->setBaseColor({200, 0, 200});
-    menu->setHighlightBGColor({200, 0, 200});
+    menu->setBaseColor(CLEYTIN_COLOR_PRIMARY);
+    menu->setHighlightBGColor(CLEYTIN_COLOR_PRIMARY);
     menu->setTitle("Cleytin");
 
     menu->addOption("Iniciar Jogo", 1);
@@ -88,7 +88,7 @@ void show_intro(CleytinEngine *engine) {
 
     CEText *text = new CEText();
     text->setSizeMultiplier(4);
-    text->setBaseColor({0, 91, 200});
+    text->setBaseColor(CLEYTIN_COLOR_PRIMARY);
     cont->addObject(text);
 
     engine->clear(true);

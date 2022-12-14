@@ -68,7 +68,7 @@ protected:
     CEColor highlightTextColor;
     CEColor textColor;
     uint8_t optionsSizeMultiplier;
-    const char *title;
+    char *title;
 
     bool renderOptionsToCanvas(CECanvas *canvas, CERenderWindow *window);
     bool renderMenuInfoToCanvas(CECanvas *canvas, CERenderWindow *window);

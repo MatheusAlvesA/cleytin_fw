@@ -19,7 +19,7 @@ private:
     bool testButtons(CleytinEngine *engine);
     void testButton(CleytinEngine *engine, const char *label, gpio_num_t btn);
     void showResults(CleytinEngine *engine, bool screen, bool serial, bool SDCard, bool buttons);
-    void putLabelInContainer(CEContainer *container, const char *label, uint8_t pos);
+    void putLabelInContainer(CEContainer *container, const char *label, uint8_t pos, const CEColor color = {0,0,0});
 };
 
 #endif

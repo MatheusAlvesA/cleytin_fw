@@ -7,13 +7,19 @@ void FWFUNAbout::run(CleytinEngine *engine) {
     
     CEText *title = new CEText();
     title->setText("Cleytin");
-    title->setPos(32, 0);
+    title->setPos(104, 80);
+    title->setSizeMultiplier(2);
+
     CEText *ver = new CEText();
-    ver->setText("0.1.0");
-    ver->setPos(40, 16);
+    ver->setText("0.2.0");
+    ver->setPos(120, 110);
+    ver->setSizeMultiplier(2);
+
     CEText *site = new CEText();
     site->setText("cleytin.com.br");
-    site->setPos(6, 48);
+    site->setPos(48, 140);
+    site->setSizeMultiplier(2);
+    site->setBaseColor(CLEYTIN_COLOR_PRIMARY);
 
     engine->addObject(title);
     engine->addObject(ver);

@@ -20,15 +20,13 @@ bool FWFUNTest::testScreen(CleytinEngine *engine) {
     rect->setFilled(true);
     rect->setPos(0, 0);
     engine->addObject(rect);
-    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i++) {
+    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 6) {
         rect->setWidth(i);
         engine->render();
-        cleytin_delay(5);
     }
-    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i++) {
+    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 6) {
         rect->setPosX(i);
         engine->render();
-        cleytin_delay(5);
     }
     engine->clear();
     delete rect;
@@ -83,7 +81,7 @@ void FWFUNTest::testButton(CleytinEngine *engine, const char *label, gpio_num_t 
     engine->addObject(container);
 
     this->putLabelInContainer(container, "Aperte ", 0);
-    this->putLabelInContainer(container, label, 1);
+    this->putLabelInContainer(container, label, 1, CLEYTIN_COLOR_PRIMARY);
 
     engine->render();
     while(ctrl->waitClick() != btn);
@@ -97,7 +95,7 @@ void FWFUNTest::showResults(CleytinEngine *engine, bool screen, bool serial, boo
     CleytinControls *ctrl = new CleytinControls();
     CEContainer *container = new CEContainer();
 
-    container->setPos(0, 0);
+    container->setPos(20, 5);
     container->setWidth(LCD_WIDTH_PIXELS);
     container->setHeight(LCD_HEIGHT_PIXELS);
     container->setPositioningStyle(CEPositioningStyle::FLEX_COLUMN);
@@ -106,24 +104,24 @@ void FWFUNTest::showResults(CleytinEngine *engine, bool screen, bool serial, boo
     engine->addObject(container);
 
     if(screen) {
-        this->putLabelInContainer(container, "Tela   OK", 0);
+        this->putLabelInContainer(container, "Tela   OK", 0, CLEYTIN_COLOR_SUCCESS);
     } else {
-        this->putLabelInContainer(container, "Tela   ERRO", 0);
+        this->putLabelInContainer(container, "Tela   ERRO", 0, CLEYTIN_COLOR_ERROR);
     }
     if(serial) {
-        this->putLabelInContainer(container, "Serial OK", 0);
+        this->putLabelInContainer(container, "Serial OK", 1, CLEYTIN_COLOR_SUCCESS);
     } else {
-        this->putLabelInContainer(container, "Serial ERRO", 0);
+        this->putLabelInContainer(container, "Serial ERRO", 1, CLEYTIN_COLOR_ERROR);
     }
     if(SDCard) {
-        this->putLabelInContainer(container, "SDCard OK", 0);
+        this->putLabelInContainer(container, "SDCard OK", 2, CLEYTIN_COLOR_SUCCESS);
     } else {
-        this->putLabelInContainer(container, "SDCard ERRO", 0);
+        this->putLabelInContainer(container, "SDCard ERRO", 2, CLEYTIN_COLOR_ERROR);
     }
     if(buttons) {
-        this->putLabelInContainer(container, "Botões OK", 0);
+        this->putLabelInContainer(container, "Botões OK", 3, CLEYTIN_COLOR_SUCCESS);
     } else {
-        this->putLabelInContainer(container, "Botões ERRO", 0);
+        this->putLabelInContainer(container, "Botões ERRO", 3, CLEYTIN_COLOR_ERROR);
     }
 
     engine->render();
@@ -133,9 +131,11 @@ void FWFUNTest::showResults(CleytinEngine *engine, bool screen, bool serial, boo
     engine->clear();
 }
 
-void FWFUNTest::putLabelInContainer(CEContainer *container, const char *label, uint8_t pos) {
+void FWFUNTest::putLabelInContainer(CEContainer *container, const char *label, uint8_t pos, const CEColor color) {
     CEText *labelObj = new CEText();
     labelObj->setText(label);
     labelObj->setPriority(pos);
+    labelObj->setSizeMultiplier(2);
+    labelObj->setBaseColor(color);
     container->addObject(labelObj);
 }

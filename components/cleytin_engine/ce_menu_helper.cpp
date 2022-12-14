@@ -44,7 +44,11 @@ uint8_t CEMenuHelper::getOptionsSizeMultiplier() {
 }
 
 void CEMenuHelper::setTitle(const char *title) {
-    this->title = title;
+    size_t titleSize = strlen(title) + 1;
+    this->title = new char[titleSize];
+    for (size_t i = 0; i < titleSize; i++) {
+        this->title[i] = title[i];
+    }
 }
 const char *CEMenuHelper::getTitle() {
     return this->title;
