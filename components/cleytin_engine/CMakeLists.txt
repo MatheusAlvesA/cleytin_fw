@@ -13,5 +13,6 @@ idf_component_register(SRCS
                             "ce_canvas.cpp"
                             "ce_canvas_tftlcd_320x240.cpp"
                             "cleytin_sdcard.cpp"
+                            "ce_colorful_bitmap.cpp"
                     INCLUDE_DIRS "include"
                     REQUIRES cleytin_commons)
