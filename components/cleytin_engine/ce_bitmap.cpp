@@ -67,7 +67,7 @@ bool CEBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
         unsigned int internalCursorX = 0;
         while (cursorX < endX)
         {
-            unsigned int bitPos = internalCursorX + (internalCursorY * this->getWidth());
+            unsigned int bitPos = internalCursorX + (internalCursorY * this->width);
             unsigned int bytePos = bitPos / 8;
             unsigned int bitOffset = bitPos % 8;
             for (size_t i = 0; i < this->getSizeMultiplier(); i++) {
