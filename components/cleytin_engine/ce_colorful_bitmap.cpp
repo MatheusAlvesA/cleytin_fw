@@ -5,6 +5,7 @@ CEColorfulBitmap::CEColorfulBitmap() {
    this->height = 0;
    this->buffer = NULL;
    this->alphaColor = 0;
+   this->sizeMultiplier = 1;
 }
 
 CEColorfulBitmap::~CEColorfulBitmap() {
@@ -19,16 +20,24 @@ void CEColorfulBitmap::setHeight(unsigned int h) {
     this->height = h;
 }
 
+void CEColorfulBitmap::setSizeMultiplier(uint8_t size) {
+    this->sizeMultiplier = size;
+}
+
+uint8_t CEColorfulBitmap::getSizeMultiplier() {
+    return this->sizeMultiplier;
+}
+
 void CEColorfulBitmap::setAlphaColor(uint16_t color) {
     this->alphaColor = color;
 }
 
 unsigned int CEColorfulBitmap::getWidth() {
-    return this->width;
+    return this->width * this->sizeMultiplier;
 }
 
 unsigned int CEColorfulBitmap::getHeight() {
-    return this->height;
+    return this->height * this->sizeMultiplier;
 }
 
 uint16_t CEColorfulBitmap::getAlphaColor() {
@@ -38,7 +47,7 @@ uint16_t CEColorfulBitmap::getAlphaColor() {
 CERenderWindow* CEColorfulBitmap::getRenderWindow() {
     CERenderWindow *window = this->getDefaultRenderWindow();
     CEPoint *start = new CEPoint((int) this->posX, (int) this->posY);
-    CEPoint *end = new CEPoint((int) (this->posX + this->width), (int) (this->posY + this->height));
+    CEPoint *end = new CEPoint((int) (this->posX + this->getWidth()), (int) (this->posY + this->getHeight()));
     window->setPoints(start, end);
     delete start;
     delete end;
@@ -61,24 +70,27 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window) 
 
     unsigned int cursorY = startY;
     unsigned int internalCursorY = 0;
-    bool allPixelRendered = true;
+    bool allPixelsRendered = true;
     while(cursorY < endY) {
         unsigned int cursorX = startX;
         unsigned int internalCursorX = 0;
-        while (cursorX < endX)
-        {
-            unsigned int index = internalCursorX + (internalCursorY * this->getWidth());
-            if(
-                !this->setPixel(
-                    canvas,
-                    cursorX,
-                    cursorY,
-                    (this->buffer[index] != this->alphaColor)
-                        ? this->rgb565ToColor(this->buffer[index])
-                        : canvas->getBackgroundColor()
-                )
-            ) {
-                allPixelRendered = false;
+        while (cursorX < endX) {
+            unsigned int index = internalCursorX + (internalCursorY * this->width);
+            for (size_t i = 0; i < this->getSizeMultiplier(); i++) {
+                for (size_t j = 0; j < this->getSizeMultiplier(); j++) {
+                    if(
+                        !this->setPixel(
+                            canvas,
+                            i + cursorX,
+                            j + cursorY,
+                            (this->buffer[index] != this->alphaColor)
+                                ? this->rgb565ToColor(this->buffer[index])
+                                : canvas->getBackgroundColor()
+                        )
+                    ) {
+                        allPixelsRendered = false;
+                    }
+                }
             }
             cursorX++;
             internalCursorX++;
@@ -87,7 +99,7 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window) 
         internalCursorY++;
     }
     
-    return allPixelRendered;
+    return allPixelsRendered;
 }
 
 CEColor CEColorfulBitmap::rgb565ToColor(const uint16_t raw) {
