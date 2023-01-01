@@ -124,6 +124,49 @@ protected:
     void mirrorPixel(int &x);
 };
 
+class CEActiveObject : public CEGraphicObject {
+public:
+    CEActiveObject();
+    virtual ~CEActiveObject();
+    virtual CERenderWindow* getDefaultRenderWindow();
+    virtual CERenderWindow* getRenderWindow() = 0;
+    virtual bool renderToCanvas(CECanvas *canvas);
+    virtual bool renderToCanvas(CECanvas *canvas, CERenderWindow *window) = 0;
+    virtual bool containsPoint(CEPoint *point, unsigned int expand = 0);
+    virtual bool containsAnyPointsFrom(std::vector<CEPoint *> *points, const unsigned int expand = 0);
+    virtual std::vector<CEPoint *> *getAllRenderWindowPoints();
+    // Setters
+    virtual void setVisible(bool visible);
+    virtual void setMirrored(bool mirrored);
+    virtual void setNegative(bool negative);
+    virtual void setColisionEnabled(bool enabled);
+    virtual void setPriority(unsigned int priority);
+    virtual void setPosX(unsigned int x);
+    virtual void setPosY(unsigned int y);
+    virtual void setMaxX(unsigned int x);
+    virtual void setMaxY(unsigned int y);
+    virtual void setPos(unsigned int x, unsigned int y);
+    virtual void setRotation(uint16_t rotation);
+    virtual void setBaseColor(const CEColor color);
+    // Getters
+    virtual bool getVisible();
+    virtual bool getMirrored();
+    virtual bool getNegative();
+    virtual bool getColisionEnabled();
+    virtual unsigned int getPriority();
+    virtual unsigned int getPosX();
+    virtual unsigned int getPosY();
+    virtual unsigned int getMaxX();
+    virtual unsigned int getMaxY();
+    virtual CEColor getBaseColor();
+    virtual uint16_t getRotation();
+    virtual size_t getRenderWindowHeight();
+    virtual size_t getRenderWindowWidth();
+
+protected:
+    CEGraphicObject *graphicObject;
+};
+
 class CleytinEngine {
 public:
     CleytinEngine();
