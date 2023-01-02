@@ -92,10 +92,10 @@ bool CEColorfulBitmap::renderToCanvas(CECanvas *canvas, CERenderWindow *window) 
                     }
                 }
             }
-            cursorX++;
+            cursorX += this->getSizeMultiplier();
             internalCursorX++;
         }
-        cursorY++;
+        cursorY += this->getSizeMultiplier();
         internalCursorY++;
     }
     
@@ -108,8 +108,6 @@ CEColor CEColorfulBitmap::rgb565ToColor(const uint16_t raw) {
     r.red = (uint8_t) ((raw >> 11) << 3);      // Primeiros 5 bits são o vermelho
     r.green = (uint8_t) ((raw >> 5) << 2);    // Bits 6 até 11 são o verde
     r.blue = (uint8_t) (raw << 3);            // Bits 12 até 16 são o azul
-
-    printf("R(%d) G(%d) B(%d)\n", r.red, r.green, r.blue);
 
     return r;
 }
