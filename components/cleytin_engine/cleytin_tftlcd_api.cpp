@@ -38,6 +38,8 @@ CleytinTFTAPI::CleytinTFTAPI() {
     ret = spi_bus_add_device(HSPI_HOST, &devcfg, this->spi);
     ESP_ERROR_CHECK(ret);
 
+    this->sendingBuffer = false;
+
     this->lcdInit();
 }
 
@@ -147,6 +149,7 @@ bool CleytinTFTAPI::sendBuffer(uint16_t *buff) {
             return false;
         }
     }
+    this->sendingBuffer = true;
 
     // Nesse momento o processo de enviar os pixels para a tela começou
     // A operação será executada em background via DMA sem muito impacto no processador
@@ -154,8 +157,12 @@ bool CleytinTFTAPI::sendBuffer(uint16_t *buff) {
 }
 
 void CleytinTFTAPI::waitBufferTransfer() {
+    if(!this->sendingBuffer) {
+        return;
+    }
     spi_transaction_t *_;
     for (int x = 0; x < 6; x++) {
         spi_device_get_trans_result(*this->spi, &_, portMAX_DELAY);
     }
+    this->sendingBuffer = false;
 }

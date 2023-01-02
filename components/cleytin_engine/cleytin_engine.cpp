@@ -157,16 +157,14 @@ uint64_t CleytinEngine::render() {
         }
     }
     this->renderToCanvas();
-    uint64_t end = esp_timer_get_time();
     this->canvas->startRender();
-    return end-start;
+    return esp_timer_get_time() - start;
 }
 
 uint64_t CleytinEngine::waitRender() {
     uint64_t start = esp_timer_get_time();
     this->canvas->waitRenderFinish();
-    uint64_t end = esp_timer_get_time();
-    return end-start;
+    return esp_timer_get_time() - start;
 }
 
 uint64_t CleytinEngine::renderSync() {
@@ -791,9 +789,19 @@ CEColor CEActiveObject::getBaseColor() {
     return {0,0,0};
 }
 
-bool CEActiveObject::renderToCanvas(CECanvas *canvas) {
+CERenderWindow* CEActiveObject::getRenderWindow() {
     if(this->graphicObject) {
-        return this->graphicObject->renderToCanvas(canvas);
+        return this->graphicObject->getRenderWindow();
+    }
+    CEPoint *point = new CEPoint(0, 0);
+    CERenderWindow *window = new CERenderWindow(point, point);
+    delete point;
+    return window;
+}
+
+bool CEActiveObject::renderToCanvas(CECanvas *canvas, CERenderWindow *window) {
+    if(this->graphicObject) {
+        return this->graphicObject->renderToCanvas(canvas, window);
     }
     return false;
 }

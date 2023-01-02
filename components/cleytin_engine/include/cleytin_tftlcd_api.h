@@ -135,6 +135,7 @@ public:
 
 private:
     spi_device_handle_t *spi;
+    bool sendingBuffer;
 
     void lcdInit();
 };
