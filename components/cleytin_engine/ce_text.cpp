@@ -24,7 +24,8 @@ void CEText::setCustomFont(CEFont *font) {
 void CEText::setText(const char *buffer) {
     delete this->text;
     this->text = this->font->parseString(buffer);
-    for (this->length = 0; *(buffer++) != '\0'; this->length++);
+    char *tmp = this->text;
+    for (this->length = 0; *(tmp++) != '\0'; this->length++);
 }
 
 void CEText::setWrap(bool wrap) {
