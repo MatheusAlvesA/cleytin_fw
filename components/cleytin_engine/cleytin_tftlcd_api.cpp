@@ -89,6 +89,7 @@ void CleytinTFTAPI::lcdInit() {
 
     //Detetando tipo de LCD
     uint32_t lcd_id = this->getLcdId();
+    printf("LCD ID: %d\n", lcd_id);
     if (lcd_id == 0) {
         //zero, ili
         lcd_init_cmds = ili_init_cmds;

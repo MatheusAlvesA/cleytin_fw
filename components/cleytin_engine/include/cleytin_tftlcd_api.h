@@ -12,11 +12,11 @@
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
 
-#define LCD_PIN_NUM_MISO  34
-#define LCD_PIN_NUM_MOSI  17
+#define LCD_PIN_NUM_MISO  21
+#define LCD_PIN_NUM_MOSI  5
 #define LCD_PIN_NUM_CLK   18
 #define LCD_PIN_NUM_CS    16
-#define LCD_PIN_NUM_DC    5
+#define LCD_PIN_NUM_DC    17
 
 #define LCD_WIDTH_PIXELS  320
 #define LCD_HEIGHT_PIXELS 240
