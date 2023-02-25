@@ -110,6 +110,10 @@ void CleytinTFTAPI::lcdInit() {
 }
 
 bool CleytinTFTAPI::sendBuffer(uint16_t *buff) {
+    if(this->sendingBuffer) {
+        printf("CleytinTFTAPI tentativa de enviar quando ocupado");
+        return false;
+    }
     // Declarando estático pois precisamos dessa memória durante a transmissão que ainda vai estar
     // acontecendo após o termino da execução desse método
     static spi_transaction_t trans[6];

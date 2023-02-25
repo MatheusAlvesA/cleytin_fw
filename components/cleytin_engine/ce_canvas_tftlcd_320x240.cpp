@@ -5,7 +5,8 @@ CECanvasTFTLCD320x240::CECanvasTFTLCD320x240() {
     memset(this->frameBuffer, 0xFF, LCD_WIDTH_PIXELS * LCD_HEIGHT_PIXELS * 2);
 
     this->lcdAPI = new CleytinTFTAPI();
-    this->lcdAPI->sendBuffer(this->frameBuffer);
+    this->startRender();
+    this->waitRenderFinish();
 
     this->setBackgroundColor({0xFF, 0xFF, 0xFF});
 }
