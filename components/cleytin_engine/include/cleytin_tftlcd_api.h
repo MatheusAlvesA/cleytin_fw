@@ -12,7 +12,7 @@
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
 
-#define LCD_PIN_NUM_MISO  21
+#define LCD_PIN_NUM_MISO  36
 #define LCD_PIN_NUM_MOSI  5
 #define LCD_PIN_NUM_CLK   18
 #define LCD_PIN_NUM_CS    16
