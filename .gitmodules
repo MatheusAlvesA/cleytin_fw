@@ -1,0 +1,3 @@
+[submodule "components/cleytin_engine"]
+	path = components/cleytin_engine
+	url = https://github.com/MatheusAlvesA/cleytin_engine.git
