@@ -96,24 +96,31 @@ void show_intro(CleytinEngine *engine) {
 
     cleytin_delay(200);
     text->setText("C      ");
+    cont->onObjectUpdated();
     engine->render();
     cleytin_delay(200);
     text->setText("Cl     ");
+    cont->onObjectUpdated();
     engine->render();
     cleytin_delay(200);
     text->setText("Cle    ");
+    cont->onObjectUpdated();
     engine->render();
     cleytin_delay(200);
     text->setText("Cley   ");
+    cont->onObjectUpdated();
     engine->render();
     cleytin_delay(200);
     text->setText("Cleyt  ");
+    cont->onObjectUpdated();
     engine->render();
     cleytin_delay(200);
     text->setText("Cleyti ");
+    cont->onObjectUpdated();
     engine->render();
     cleytin_delay(200);
     text->setText("Cleytin");
+    cont->onObjectUpdated();
     engine->render();
     cleytin_delay(1000);
 
