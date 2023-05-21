@@ -20,11 +20,11 @@ bool FWFUNTest::testScreen(CleytinEngine *engine) {
     rect->setFilled(true);
     rect->setPos(0, 0);
     engine->addObject(rect);
-    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 6) {
+    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 5) {
         rect->setWidth(i);
         engine->render();
     }
-    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 6) {
+    for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 5) {
         rect->setPosX(i);
         engine->render();
     }
