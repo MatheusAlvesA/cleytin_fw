@@ -23,10 +23,12 @@ bool FWFUNTest::testScreen(CleytinEngine *engine) {
     for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 5) {
         rect->setWidth(i);
         engine->render();
+        cleytin_delay(20);
     }
     for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 5) {
         rect->setPosX(i);
         engine->render();
+        cleytin_delay(20);
     }
     engine->clear();
     delete rect;
