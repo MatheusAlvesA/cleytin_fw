@@ -33,7 +33,7 @@ void FWFUNSdcard::run(CleytinEngine *engine) {
     }
     uint idSelected = menu->getSelected();
 
-    delete menu;
+    engine->removeObject(menu, true);
 
     if(idSelected == 0) {
         printf("Nenhum arquivo selecionado\n");
@@ -53,6 +53,7 @@ void FWFUNSdcard::run(CleytinEngine *engine) {
 
 void FWFUNSdcard::loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *path) {
     engine->clear();
+    engine->render();
 
     CERectangle *barra = new CERectangle();
     barra->setPos(10, 120);

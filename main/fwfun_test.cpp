@@ -2,14 +2,19 @@
 
 void FWFUNTest::run(CleytinEngine *engine) {
     engine->clear();
+    engine->render();
     bool screen = this->testScreen(engine);
     engine->clear();
+    engine->render();
     bool serial = this->testSerial(engine);
     engine->clear();
+    engine->render();
     bool sdcard = this->testSDCard(engine);
     engine->clear();
+    engine->render();
     bool buttons = this->testButtons(engine);
     engine->clear();
+    engine->render();
 
     this->showResults(engine, screen, serial, sdcard, buttons);
 }
@@ -30,8 +35,7 @@ bool FWFUNTest::testScreen(CleytinEngine *engine) {
         engine->render();
         cleytin_delay(20);
     }
-    engine->clear();
-    delete rect;
+    engine->removeObject(rect, true);
     return true;
 }
 
@@ -88,8 +92,8 @@ void FWFUNTest::testButton(CleytinEngine *engine, const char *label, gpio_num_t 
     engine->render();
     while(ctrl->waitClick() != btn);
 
-    delete container;
     delete ctrl;
+    engine->removeObject(container, true);
     engine->clear();
 }
 
@@ -128,9 +132,10 @@ void FWFUNTest::showResults(CleytinEngine *engine, bool screen, bool serial, boo
 
     engine->render();
     ctrl->waitClick();
-    delete container;
+    engine->removeObject(container, true);
     delete ctrl;
     engine->clear();
+    engine->render();
 }
 
 void FWFUNTest::putLabelInContainer(CEContainer *container, const char *label, uint8_t pos, const CEColor color) {
