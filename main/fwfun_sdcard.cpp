@@ -26,9 +26,9 @@ void FWFUNSdcard::run(CleytinEngine *engine) {
     }
 
     engine->addObject(menu);
-    engine->render();
+    engine->loopAndRender();
     while(!menu->handleControls() && !menu->startPressed()) {
-        engine->render();
+        engine->loopAndRender();
         cleytin_delay(10);
     }
     uint idSelected = menu->getSelected();
@@ -53,7 +53,7 @@ void FWFUNSdcard::run(CleytinEngine *engine) {
 
 void FWFUNSdcard::loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *path) {
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
 
     CERectangle *barra = new CERectangle();
     barra->setPos(10, 120);
@@ -85,13 +85,13 @@ void FWFUNSdcard::loadGame(CleytinEngine *engine, CleytinSdcard *sdcard, char *p
         cleytin_delay(2000);
         return;
     }
-    engine->render();
+    engine->loopAndRender();
     while(sdcard->getLoadProgress() < 100) {
         progresso->setWidth((unsigned int) ((float)300 * ((float)sdcard->getLoadProgress() / (float)100)));
-        engine->render();
+        engine->loopAndRender();
     }
     progresso->setWidth(300);
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(200);
     engine->clear();
 
@@ -117,6 +117,6 @@ void FWFUNSdcard::showErrorScreen(CleytinEngine *engine) {
     errorLabel->setSizeMultiplier(2);
     errorLabel->setBaseColor(CLEYTIN_COLOR_ERROR);
     engine->addObject(errorLabel);
-    engine->render();
+    engine->loopAndRender();
     engine->clear(true);
 }

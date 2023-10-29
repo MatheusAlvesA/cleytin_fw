@@ -2,19 +2,19 @@
 
 void FWFUNTest::run(CleytinEngine *engine) {
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
     bool screen = this->testScreen(engine);
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
     bool serial = this->testSerial(engine);
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
     bool sdcard = this->testSDCard(engine);
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
     bool buttons = this->testButtons(engine);
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
 
     this->showResults(engine, screen, serial, sdcard, buttons);
 }
@@ -27,12 +27,12 @@ bool FWFUNTest::testScreen(CleytinEngine *engine) {
     engine->addObject(rect);
     for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 5) {
         rect->setWidth(i);
-        engine->render();
+        engine->loopAndRender();
         cleytin_delay(20);
     }
     for (unsigned int i = 0; i <= LCD_WIDTH_PIXELS; i += 5) {
         rect->setPosX(i);
-        engine->render();
+        engine->loopAndRender();
         cleytin_delay(20);
     }
     engine->removeObject(rect, true);
@@ -89,7 +89,7 @@ void FWFUNTest::testButton(CleytinEngine *engine, const char *label, gpio_num_t 
     this->putLabelInContainer(container, "Aperte ", 0);
     this->putLabelInContainer(container, label, 1, CLEYTIN_COLOR_PRIMARY);
 
-    engine->render();
+    engine->loopAndRender();
     while(ctrl->waitClick() != btn);
 
     delete ctrl;
@@ -130,12 +130,12 @@ void FWFUNTest::showResults(CleytinEngine *engine, bool screen, bool serial, boo
         this->putLabelInContainer(container, "Botões ERRO", 3, CLEYTIN_COLOR_ERROR);
     }
 
-    engine->render();
+    engine->loopAndRender();
     ctrl->waitClick();
     engine->removeObject(container, true);
     delete ctrl;
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
 }
 
 void FWFUNTest::putLabelInContainer(CEContainer *container, const char *label, uint8_t pos, const CEColor color) {

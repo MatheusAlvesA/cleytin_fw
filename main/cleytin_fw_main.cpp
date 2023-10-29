@@ -40,13 +40,13 @@ void app_main(void)
 
 void handle_options(CleytinEngine *engine, CEMenuHelper *menu) {
     engine->addObject(menu);
-    engine->render();
+    engine->loopAndRender();
     while(!menu->handleControls()) {
-        engine->render();
+        engine->loopAndRender();
         cleytin_delay(10);
     }
     engine->clear();
-    engine->render();
+    engine->loopAndRender();
     switch (menu->getSelected()) {
         case 1: {
             FWFUNStartGame *fun = new FWFUNStartGame();
@@ -97,31 +97,31 @@ void show_intro(CleytinEngine *engine) {
     cleytin_delay(200);
     text->setText("C      ");
     cont->onObjectUpdated();
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(200);
     text->setText("Cl     ");
     cont->onObjectUpdated();
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(200);
     text->setText("Cle    ");
     cont->onObjectUpdated();
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(200);
     text->setText("Cley   ");
     cont->onObjectUpdated();
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(200);
     text->setText("Cleyt  ");
     cont->onObjectUpdated();
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(200);
     text->setText("Cleyti ");
     cont->onObjectUpdated();
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(200);
     text->setText("Cleytin");
     cont->onObjectUpdated();
-    engine->render();
+    engine->loopAndRender();
     cleytin_delay(1000);
 
     engine->clear(true);

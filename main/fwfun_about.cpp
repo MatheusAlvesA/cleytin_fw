@@ -25,7 +25,7 @@ void FWFUNAbout::run(CleytinEngine *engine) {
     engine->addObject(ver);
     engine->addObject(site);
 
-    engine->render();
+    engine->loopAndRender();
     ctrl->waitClick();
 
     engine->clear();
